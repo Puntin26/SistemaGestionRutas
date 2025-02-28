@@ -4,12 +4,20 @@ import java.util.ArrayList;
 
 public class Controlador {
 
-    ArrayList<Parada> paradas;
-    ArrayList<Ruta> rutas;
+    private ArrayList<Parada> paradas;
+    private ArrayList<Ruta> rutas;
+    private static Controlador controlador = null;
 
-    public Controlador() {
+    private Controlador() {
+        super();
         this.paradas = new ArrayList<>();
         this.rutas = new ArrayList<>();
+    }
+
+    public static Controlador getInstance() {
+        if (controlador == null) {
+            controlador = new Controlador();
+        }return controlador;
     }
 
     public ArrayList<Parada> getParadas() {

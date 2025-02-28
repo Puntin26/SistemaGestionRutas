@@ -3,13 +3,16 @@ package com.example.demoproyfinal;
 import java.util.Date;
 
 public class Ruta {
-
+    Parada origen;
+    Parada destino;
     int distancia;
     float costo;
     Date tiempo;
     int cantTransbordos;
 
-    public Ruta(int distancia, float costo, Date tiempo) {
+    public Ruta(Parada origen, Parada destino, int distancia, float costo, Date tiempo) {
+        this.origen = origen;
+        this.destino = destino;
         this.distancia = distancia;
         this.costo = costo;
         this.tiempo = tiempo;
@@ -46,5 +49,11 @@ public class Ruta {
 
     public void setCantTransbordos(int cantTransbordos) {
         this.cantTransbordos = cantTransbordos;
+    }
+
+    @Override
+    public String toString() {
+        return "Ruta{Origen: " + origen.getNombre() + ", Destino: " + destino.getNombre() +
+                ", Distancia: " + distancia + " km, Costo: $" + costo + ", Tiempo: " + tiempo + "}";
     }
 }
