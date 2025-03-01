@@ -8,8 +8,6 @@ import java.util.*;
 public class main {
     public static void main(String[] args) {
 
-        Map<Parada, List<Ruta>> listaAdyacencia = new HashMap<>();
-
         Controlador controlador = Controlador.getInstance();
 
         Parada parada1 = new Parada("Parada A");
@@ -29,15 +27,16 @@ public class main {
         controlador.insertarRuta(ruta2);
         controlador.insertarRuta(ruta3);
 
-        listaAdyacencia.put(parada1, Arrays.asList(ruta1, ruta3));
-        listaAdyacencia.put(parada2, Collections.singletonList(ruta2));
-        listaAdyacencia.put(parada3, Collections.singletonList(ruta3));
+        System.out.println("Paradas: " + controlador.getParadas());
+        System.out.println("Rutas: " + controlador.getRutas());
 
-        System.out.println("Lista de adyacencia:");
-        listaAdyacencia.forEach((parada, rutas) -> {
-            System.out.println("Parada: " + parada.getNombre());
-            rutas.forEach(ruta -> System.out.println("  -> " + ruta));
-        });
+        controlador.eliminarRuta(ruta2);
+        System.out.println("Ruta despues de ser eliminada: ");
+        System.out.println("Rutas: " + controlador.getRutas());
+
+        controlador.eliminarParada(parada1);
+        System.out.println("Parada despues de ser eliminada: ");
+        System.out.println("Paradas: " + controlador.getParadas());
 
     }
 
