@@ -109,7 +109,7 @@ public class Controlador {
             return;
         }
 
-        if (paradas.stream().anyMatch(p -> p.getNombre().equalsIgnoreCase(nuevoNombre)))) {
+        if (paradas.stream().anyMatch(p -> p.getNombre().equalsIgnoreCase(nuevoNombre))) {
             System.out.println("Error: Ya existe una parada con el nombre '" + nuevoNombre + "'.");
             return;
         }
