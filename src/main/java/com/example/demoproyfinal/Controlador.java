@@ -9,7 +9,7 @@ public class Controlador {
 
     private ArrayList<Parada> paradas;
     private ArrayList<Ruta> rutas;
-    private Map<Parada, List<Ruta>> listaAdyacencia = new HashMap<>();
+    Map<Parada, List<Ruta>> listaAdyacencia = new HashMap<>();
     private static Controlador controlador = null;
 
     private Controlador() {
