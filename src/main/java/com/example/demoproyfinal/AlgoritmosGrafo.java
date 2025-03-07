@@ -35,6 +35,7 @@ public class AlgoritmosGrafo {
                 break;
             }
 
+            //cuerpo y funcionalidad Dijkstra
             List<Ruta> rutas = listaadyacencia.get(u);
             for(Ruta r : rutas){
                 Parada a = r.getDestino();
