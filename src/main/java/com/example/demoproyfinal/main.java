@@ -30,6 +30,15 @@ public class main {
         System.out.println("Paradas: " + controlador.getParadas());
         System.out.println("Rutas: " + controlador.getRutas());
 
+        controlador.modificarParada(parada1, "Parada X");
+        System.out.println("\nDespués de modificar Parada A:");
+        System.out.println("Paradas: " + controlador.getParadas());
+
+        // Modificar una ruta
+        controlador.modificarRuta(ruta1, 12, 6.0f, new Date());
+        System.out.println("\nDespués de modificar Ruta 1:");
+        System.out.println("Rutas: " + controlador.getRutas());
+
         controlador.eliminarRuta(ruta2);
         System.out.println("Ruta despues de ser eliminada: ");
         System.out.println("Rutas: " + controlador.getRutas());

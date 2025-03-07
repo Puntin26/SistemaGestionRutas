@@ -1,9 +1,6 @@
 package com.example.demoproyfinal;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class Controlador {
 
@@ -66,6 +63,26 @@ public class Controlador {
         listaAdyacencia.values().forEach(lista -> lista.removeIf(ruta -> ruta.getOrigen().equals(parada) || ruta.getDestino().equals(parada)));
 
     }
+
+    public void modificarParada(Parada parada, String nuevoNombre) {
+        if (paradas.contains(parada)) {
+            parada.setNombre(nuevoNombre);
+        } else {
+            System.out.println("La parada no existe en el sistema.");
+        }
+    }
+
+    public void modificarRuta(Ruta ruta, int nuevaDistancia, float nuevoCosto, Date nuevoTiempo) {
+        if (rutas.contains(ruta)) {
+            ruta.setDistancia(nuevaDistancia);
+            ruta.setCosto(nuevoCosto);
+            ruta.setTiempo(nuevoTiempo);
+        } else {
+            System.out.println("La ruta no existe en el sistema.");
+        }
+    }
+
+
 
 
 
