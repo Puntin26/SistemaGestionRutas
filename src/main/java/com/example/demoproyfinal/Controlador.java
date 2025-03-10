@@ -51,7 +51,7 @@ public class Controlador {
 
         this.paradas.add(parada);
         this.listaAdyacencia.put(parada, new ArrayList<>());
-        System.out.println("Parada '" + parada.getNombre() + "' agregada correctamente.");
+       // System.out.println("Parada '" + parada.getNombre() + "' agregada correctamente.");
     }
 
     public void insertarRuta(Ruta ruta) {
@@ -72,7 +72,7 @@ public class Controlador {
 
         this.rutas.add(ruta);
         this.listaAdyacencia.get(ruta.getOrigen()).add(ruta);
-        System.out.println("Ruta agregada correctamente.");
+        //System.out.println("Ruta agregada correctamente.");
     }
 
     public void eliminarParada(Parada parada) {
@@ -84,7 +84,7 @@ public class Controlador {
         paradas.remove(parada);
         rutas.removeIf(ruta -> ruta.getOrigen().equals(parada) || ruta.getDestino().equals(parada));
         listaAdyacencia.remove(parada);
-        System.out.println("Parada '" + parada.getNombre() + "' eliminada correctamente.");
+        //System.out.println("Parada '" + parada.getNombre() + "' eliminada correctamente.");
     }
 
     public void eliminarRuta(Ruta ruta) {
@@ -95,7 +95,7 @@ public class Controlador {
 
         rutas.remove(ruta);
         listaAdyacencia.get(ruta.getOrigen()).remove(ruta);
-        System.out.println("Ruta eliminada correctamente.");
+       // System.out.println("Ruta eliminada correctamente.");
     }
 
     public void modificarParada(Parada parada, String nuevoNombre) {
@@ -115,7 +115,7 @@ public class Controlador {
         }
 
         parada.setNombre(nuevoNombre);
-        System.out.println("Parada modificada correctamente.");
+        //System.out.println("Parada modificada correctamente.");
     }
 
     public void modificarRuta(Ruta ruta, int nuevaDistancia, float nuevoCosto, Date nuevoTiempo) {
@@ -132,7 +132,7 @@ public class Controlador {
         ruta.setDistancia(nuevaDistancia);
         ruta.setCosto(nuevoCosto);
         ruta.setTiempo(nuevoTiempo);
-        System.out.println("Ruta modificada correctamente.");
+        //System.out.println("Ruta modificada correctamente.");
     }
 
     public Map<Parada, List<Ruta>> getListaAdyacencia() {
