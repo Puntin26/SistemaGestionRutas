@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-public class PruebaParteCAvance {
+public class PruebaParteBAvance {
     public static void main(String[] args) {
         // Instancia del controlador
         Controlador controlador = Controlador.getInstance();
