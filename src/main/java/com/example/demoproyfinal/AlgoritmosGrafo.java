@@ -114,4 +114,8 @@ public class AlgoritmosGrafo {
         return dist;
     }
 
+    //Faltarian:
+    //prim
+    //kruskall
+
 }

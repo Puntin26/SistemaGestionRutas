@@ -135,6 +135,10 @@ public class Controlador {
         System.out.println("Ruta modificada correctamente.");
     }
 
+    public Map<Parada, List<Ruta>> getListaAdyacencia() {
+        return listaAdyacencia;
+    }
+
 
 
 
