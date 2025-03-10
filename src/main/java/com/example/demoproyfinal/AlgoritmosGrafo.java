@@ -45,7 +45,7 @@ public class AlgoritmosGrafo {
                     distancia.put(a, nuevaDistancia);
                     previo.put(a, u);
                     cola.remove(a);
-                    cola.add(u);
+                    cola.add(a);
                 }
             }
         }
