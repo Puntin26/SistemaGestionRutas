@@ -4,7 +4,6 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-//esta prueba es con grafos dirigidos
 public class PruebaParteBAvance {
     public static void main(String[] args) {
         // Instancia del controlador
