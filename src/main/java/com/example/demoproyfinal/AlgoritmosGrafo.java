@@ -115,7 +115,14 @@ public class AlgoritmosGrafo {
     }
 
     //Faltarian:
-    //prim
+    //Prim:
+    //grafo com NO dirigido (para MST), se toma la ruta con menor "distancia" como peso.
+    //Retorna el conjunto de aristas que forman el arbol de expansion minima
+    //mejor para grafos densos
+
     //kruskall
+    //Similar a Prim, pero se ordenan primero todas las aristas
+    // y se va tomando la de menor peso que no forme ciclo, se usaria Union-Find
+    //mejor para grafos dispersos
 
 }

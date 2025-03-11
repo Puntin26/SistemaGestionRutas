@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
+//esta prueba es con grafos dirigidos
 public class PruebaParteBAvance {
     public static void main(String[] args) {
         // Instancia del controlador
@@ -13,11 +14,13 @@ public class PruebaParteBAvance {
         Parada p1 = new Parada("A");
         Parada p2 = new Parada("B");
         Parada p3 = new Parada("C");
+        Parada p4 = new Parada("D");
 
         // Agregar paradas al controlador
         controlador.insertarParada(p1);
         controlador.insertarParada(p2);
         controlador.insertarParada(p3);
+        controlador.insertarParada(p4);
 
         //  rutas dirigidas
         // A -> B (distancia 5)
@@ -26,32 +29,36 @@ public class PruebaParteBAvance {
         Ruta r1 = new Ruta(p1, p2, 5, 2.0f, new Date());
         Ruta r2 = new Ruta(p2, p3, 10, 3.0f, new Date());
         Ruta r3 = new Ruta(p1, p3, 20, 5.0f, new Date());
+        Ruta r4 = new Ruta(p2, p4, 12, 5.0f, new Date());
+        Ruta r5 = new Ruta(p4, p3, 12, 5.0f, new Date());
 
         // Agregar rutas
         controlador.insertarRuta(r1);
         controlador.insertarRuta(r2);
         controlador.insertarRuta(r3);
+        controlador.insertarRuta(r4);
+        controlador.insertarRuta(r5);
 
         //  estructura inicial
         System.out.println("Paradas: " + controlador.getParadas());
         System.out.println("Rutas:   " + controlador.getRutas());
 
         // PRUEBAS
-        probarDijkstra(controlador, p1, p3);
+        probarDijkstra(controlador, p1, p4);
         probarFloydWarshall(controlador);
     }
 
     private static void probarDijkstra(Controlador controlador, Parada origen, Parada destino) {
         System.out.println("\n PRUEBA: Dijkstra ---");
         List<Parada> camino = AlgoritmosGrafo.dijkstra(controlador.getListaAdyacencia(), origen, destino);
-        System.out.println("Ruta más corta desde " + origen.getNombre() + " hasta " + destino.getNombre() + ": " + camino);
+        System.out.println("Ruta mas corta desde " + origen.getNombre() + " hasta " + destino.getNombre() + ": " + camino);
 
     }
 
     private static void probarFloydWarshall(Controlador controlador) {
         System.out.println("\n PRUEBA: Floyd-Warshall ---");
         int[][] distancias = AlgoritmosGrafo.floydWarshall(controlador.getParadas(), controlador.getListaAdyacencia());
-        System.out.println("Matriz de distancias mínimas:");
+        System.out.println("Matriz de distancias minimas:");
 
         for (int[] fila : distancias) {
             System.out.println(Arrays.toString(fila));
