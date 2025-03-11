@@ -6,7 +6,7 @@ public class Controlador {
 
     private ArrayList<Parada> paradas;
     private ArrayList<Ruta> rutas;
-    Map<Parada, List<Ruta>> listaAdyacencia = new HashMap<>();
+    private Map<Parada, List<Ruta>> listaAdyacencia = new HashMap<>();
     private static Controlador controlador = null;
 
     private Controlador() {
@@ -51,7 +51,7 @@ public class Controlador {
 
         this.paradas.add(parada);
         this.listaAdyacencia.put(parada, new ArrayList<>());
-       // System.out.println("Parada '" + parada.getNombre() + "' agregada correctamente.");
+        System.out.println("Parada '" + parada.getNombre() + "' agregada correctamente.");
     }
 
     public void insertarRuta(Ruta ruta) {
@@ -72,7 +72,7 @@ public class Controlador {
 
         this.rutas.add(ruta);
         this.listaAdyacencia.get(ruta.getOrigen()).add(ruta);
-        //System.out.println("Ruta agregada correctamente.");
+        System.out.println("Ruta agregada correctamente.");
     }
 
     public void eliminarParada(Parada parada) {
@@ -138,9 +138,5 @@ public class Controlador {
     public Map<Parada, List<Ruta>> getListaAdyacencia() {
         return listaAdyacencia;
     }
-
-
-
-
 
 }
