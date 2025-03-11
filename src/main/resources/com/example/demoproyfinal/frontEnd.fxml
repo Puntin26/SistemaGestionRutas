@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+
+<VBox prefHeight="383.0" prefWidth="973.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.demoproyfinal.HelloController">
+   <children>
+      <AnchorPane>
+         <children>
+
+                <!-- Formulario para agregar Parada -->
+             <HBox layoutX="20.0" layoutY="20.0" spacing="20">
+                 <Label text="Parada:" />
+                 <TextField fx:id="txtParada" promptText="Ej. Parada A" />
+                 <Button onAction="#agregarParada" text="Agregar Parada" />
+             </HBox>
+
+                <!-- Formulario para agregar Ruta -->
+             <HBox layoutX="20.0" layoutY="56.0" spacing="10">
+                 <Label text="Origen:" />
+                 <TextField fx:id="txtOrigen" promptText="Ej. Parada A" />
+                 <Label text="Destino:" />
+                 <TextField fx:id="txtDestino" promptText="Ej. Parada B" />
+                 <Label text="Distancia:" />
+                 <TextField fx:id="txtDistancia" promptText="Ej. 10" />
+                 <Label text="Costo:" />
+                 <TextField fx:id="txtCosto" promptText="Ej. 5.5" />
+                 <Button onAction="#agregarRuta" text="Agregar Ruta" />
+             </HBox>
+
+
+                <!-- Lista de Paradas -->
+             <Label layoutX="465.6000061035156" layoutY="92.0" text="Paradas:" />
+             <ListView fx:id="listViewParadas" layoutX="20.0" layoutY="120.0" prefHeight="100" prefWidth="922.0" />
+
+                <!-- Lista de Rutas -->
+             <Label layoutX="472.0" layoutY="230.39999389648438" text="Rutas:" />
+             <ListView fx:id="listViewRutas" layoutX="20.0" layoutY="258.3999938964844" prefHeight="100" prefWidth="922.0" />
+         </children>
+      </AnchorPane>
+   </children>
+</VBox>
