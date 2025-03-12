@@ -25,11 +25,11 @@ public class PruebaParteBAvance {
         // A -> B (distancia 5)
         // B -> C (distancia 10)
         // A -> C (distancia 20)
-        Ruta r1 = new Ruta(p1, p2, 5, 2.0f, new Date());
-        Ruta r2 = new Ruta(p2, p3, 10, 3.0f, new Date());
-        Ruta r3 = new Ruta(p1, p3, 20, 5.0f, new Date());
-        Ruta r4 = new Ruta(p2, p4, 12, 5.0f, new Date());
-        Ruta r5 = new Ruta(p4, p3, 12, 5.0f, new Date());
+        Ruta r1 = new Ruta(p1, p2, 5, 2.0f, 9);
+        Ruta r2 = new Ruta(p2, p3, 10, 3.0f, 8);
+        Ruta r3 = new Ruta(p1, p3, 20, 5.0f, 7);
+        Ruta r4 = new Ruta(p2, p4, 12, 5.0f, 10);
+        Ruta r5 = new Ruta(p4, p3, 12, 5.0f, 14);
 
         // Agregar rutas
         controlador.insertarRuta(r1);

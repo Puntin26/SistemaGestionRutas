@@ -118,7 +118,7 @@ public class Controlador {
         //System.out.println("Parada modificada correctamente.");
     }
 
-    public void modificarRuta(Ruta ruta, int nuevaDistancia, float nuevoCosto, Date nuevoTiempo) {
+    public void modificarRuta(Ruta ruta, int nuevaDistancia, float nuevoCosto, int nuevoTiempo) {
         if (ruta == null || !rutas.contains(ruta)) {
             System.out.println("Error: La ruta no existe en el sistema.");
             return;

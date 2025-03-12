@@ -7,10 +7,10 @@ public class Ruta {
     Parada destino;
     int distancia;
     float costo;
-    Date tiempo;
+    int tiempo;
     int cantTransbordos;
 
-    public Ruta(Parada origen, Parada destino, int distancia, float costo, Date tiempo) {
+    public Ruta(Parada origen, Parada destino, int distancia, float costo, int tiempo) {
         this.origen = origen;
         this.destino = destino;
         this.distancia = distancia;
@@ -35,11 +35,11 @@ public class Ruta {
         this.costo = costo;
     }
 
-    public Date getTiempo() {
+    public int getTiempo() {
         return tiempo;
     }
 
-    public void setTiempo(Date tiempo) {
+    public void setTiempo(int tiempo) {
         this.tiempo = tiempo;
     }
 

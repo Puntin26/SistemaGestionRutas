@@ -29,6 +29,9 @@ public class HelloController {
     private TextField txtCosto;
 
     @FXML
+    private TextField txtTiempo;
+
+    @FXML
     private AnchorPane graphContainer;
 
     private Graph<Parada, Ruta> graph;
@@ -61,6 +64,7 @@ public class HelloController {
         //iniciar con runLater (evita error)
         Platform.runLater(() -> {
             graphView.init();
+            graphView.update();
         });
     }
 
@@ -90,11 +94,13 @@ public class HelloController {
         String destino = txtDestino.getText().trim();
         String distStr = txtDistancia.getText().trim();
         String costoStr = txtCosto.getText().trim();
+        String timeStr = txtTiempo.getText().trim();
 
-        if (!origen.isEmpty() && !destino.isEmpty() && !distStr.isEmpty() && !costoStr.isEmpty()) {
+        if (!origen.isEmpty() && !destino.isEmpty() && !distStr.isEmpty() && !costoStr.isEmpty() && !timeStr.isEmpty()) {
             try {
                 int dist = Integer.parseInt(distStr);
                 float cost = Float.parseFloat(costoStr);
+                int tim = Integer.parseInt(timeStr);
 
                 // Buscamos las paradas (origen/destino) en la lista
                 Parada pOrigen = null;
@@ -110,13 +116,14 @@ public class HelloController {
 
                 // Si ambas paradas existen, creamos la ruta
                 if (pOrigen != null && pDestino != null) {
-                    Ruta ruta = new Ruta(pOrigen, pDestino, dist, cost, new Date());
+                    Ruta ruta = new Ruta(pOrigen, pDestino, dist, cost, tim);
                     Controlador.getInstance().insertarRuta(ruta);
                     //refrescarListas();
                     txtOrigen.clear();
                     txtDestino.clear();
                     txtDistancia.clear();
                     txtCosto.clear();
+                    txtTiempo.clear();
 
                     graph.insertEdge(pOrigen, pDestino, ruta);
                     graphView.update();

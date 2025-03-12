@@ -19,9 +19,9 @@ public class main {
         controlador.insertarParada(parada2);
         controlador.insertarParada(parada3);
 
-        Ruta ruta1 = new Ruta(parada1, parada2, 10, 5.5f, new Date());
-        Ruta ruta2 = new Ruta(parada2, parada3, 10, 5.5f, new Date());
-        Ruta ruta3 = new Ruta(parada1, parada3, 10, 5.5f, new Date());
+        Ruta ruta1 = new Ruta(parada1, parada2, 10, 5.5f, 12);
+        Ruta ruta2 = new Ruta(parada2, parada3, 10, 5.5f, 10);
+        Ruta ruta3 = new Ruta(parada1, parada3, 10, 5.5f, 9);
 
         controlador.insertarRuta(ruta1);
         controlador.insertarRuta(ruta2);
@@ -35,7 +35,7 @@ public class main {
         System.out.println("Paradas: " + controlador.getParadas());
 
         // Modificar una ruta
-        controlador.modificarRuta(ruta1, 12, 6.0f, new Date());
+        controlador.modificarRuta(ruta1, 12, 6.0f, 15);
         System.out.println("\nDespués de modificar Ruta 1:");
         System.out.println("Rutas: " + controlador.getRutas());
 
