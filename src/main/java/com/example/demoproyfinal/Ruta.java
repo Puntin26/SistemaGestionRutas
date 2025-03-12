@@ -69,7 +69,7 @@ public class Ruta {
 
     @Override
     public String toString() {
-        return + distancia + " km\n$" + costo;
+        return + distancia + " km\n$" + costo +"\n" + tiempo + " min";
     }
 
     public String toString2() {
