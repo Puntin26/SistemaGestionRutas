@@ -1,9 +1,13 @@
 package com.example.demoproyfinal;
 
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
+import com.brunomnsilva.smartgraph.graph.*;
+import com.brunomnsilva.smartgraph.graphview.*;
+import javafx.scene.layout.AnchorPane;
 
 import java.util.Date;
 
@@ -25,18 +29,58 @@ public class HelloController {
     private TextField txtCosto;
 
     @FXML
-    private ListView<Parada> listViewParadas;
+    private AnchorPane graphContainer;
+
+    private Graph<Parada, Ruta> graph;
+    private SmartGraphPanel<Parada, Ruta> graphView;
 
     @FXML
-    private ListView<Ruta> listViewRutas;
+    public void initialize() {
+        graph = new GraphEdgeList<>();// esto tambien resetea el grafo
+
+        // paradas = vertices
+        for (Parada p : Controlador.getInstance().getParadas()) {
+            graph.insertVertex(p);
+        }
+
+        //ruta = arista
+        for (Ruta r : Controlador.getInstance().getRutas()) {
+            graph.insertEdge(r.getOrigen(), r.getDestino(), r);
+        }
+
+        graphView = new SmartGraphPanel<>(graph);//panel de visualizacion
+
+        AnchorPane.setTopAnchor(graphView, 0.0);
+        AnchorPane.setBottomAnchor(graphView, 0.0);
+        AnchorPane.setLeftAnchor(graphView, 0.0);
+        AnchorPane.setRightAnchor(graphView, 0.0);
+
+        graphContainer.getChildren().clear();
+        graphContainer.getChildren().add(graphView);
+
+        //iniciar con runLater (evita error)
+        Platform.runLater(() -> {
+            graphView.init();
+        });
+    }
+
+
+
+//    private ListView<Parada> listViewParadas;
+//
+//    @FXML
+//    private ListView<Ruta> listViewRutas;
 
     @FXML
     void agregarParada(ActionEvent event) {
         String nombre = txtParada.getText().trim();
         if (!nombre.isEmpty()) {
-            Controlador.getInstance().insertarParada(new Parada(nombre));
-            refrescarListas();
+            Parada nueva = new Parada(nombre);
+            Controlador.getInstance().insertarParada(nueva);
+            //refrescarListas();
             txtParada.clear();
+            graph.insertVertex(nueva);
+            graphView.update();
         }
     }
 
@@ -68,11 +112,14 @@ public class HelloController {
                 if (pOrigen != null && pDestino != null) {
                     Ruta ruta = new Ruta(pOrigen, pDestino, dist, cost, new Date());
                     Controlador.getInstance().insertarRuta(ruta);
-                    refrescarListas();
+                    //refrescarListas();
                     txtOrigen.clear();
                     txtDestino.clear();
                     txtDistancia.clear();
                     txtCosto.clear();
+
+                    graph.insertEdge(pOrigen, pDestino, ruta);
+                    graphView.update();
                 }
             } catch (NumberFormatException e) {
                 System.out.println("Error en los valores de distancia/costo.");
@@ -80,8 +127,8 @@ public class HelloController {
         }
     }
 
-    private void refrescarListas() {
-        listViewParadas.getItems().setAll(Controlador.getInstance().getParadas());
-        listViewRutas.getItems().setAll(Controlador.getInstance().getRutas());
-    }
+//    private void refrescarListas() {
+//        listViewParadas.getItems().setAll(Controlador.getInstance().getParadas());
+//        listViewRutas.getItems().setAll(Controlador.getInstance().getRutas());
+//    }
 }

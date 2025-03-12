@@ -69,7 +69,10 @@ public class Ruta {
 
     @Override
     public String toString() {
-        return "Ruta{Origen: " + origen.getNombre() + ", Destino: " + destino.getNombre() +
-                ", Distancia: " + distancia + " km, Costo: $" + costo + ", Tiempo: " + tiempo + "}";
+        return + distancia + " km\n$" + costo;
     }
+
+    public String toString2() {
+        return "Ruta{Origen: " + origen.getNombre() + ", Destino: " + destino.getNombre() +
+                ", Distancia: " + distancia + " km, Costo: $" + costo + ", Tiempo: " + tiempo + "}";    }
 }

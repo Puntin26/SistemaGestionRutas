@@ -30,13 +30,17 @@
              </HBox>
 
 
-                <!-- Lista de Paradas -->
-             <Label layoutX="465.6000061035156" layoutY="92.0" text="Paradas:" />
-             <ListView fx:id="listViewParadas" layoutX="20.0" layoutY="120.0" prefHeight="100" prefWidth="922.0" />
+             <AnchorPane fx:id="graphContainer" layoutX="20.0" layoutY="120.0"
+                         prefHeight="250.0" prefWidth="960.0"
+                         style="-fx-border-color: #999; -fx-border-width: 1;">
+             </AnchorPane>
+<!--                 Lista de Paradas -->
+<!--             <Label layoutX="465.6000061035156" layoutY="92.0" text="Paradas:" />-->
+<!--             <ListView fx:id="listViewParadas" layoutX="20.0" layoutY="120.0" prefHeight="100" prefWidth="922.0" />-->
 
-                <!-- Lista de Rutas -->
-             <Label layoutX="472.0" layoutY="230.39999389648438" text="Rutas:" />
-             <ListView fx:id="listViewRutas" layoutX="20.0" layoutY="258.3999938964844" prefHeight="100" prefWidth="922.0" />
+<!--                &lt;!&ndash; Lista de Rutas &ndash;&gt;-->
+<!--             <Label layoutX="472.0" layoutY="230.39999389648438" text="Rutas:" />-->
+<!--             <ListView fx:id="listViewRutas" layoutX="20.0" layoutY="258.3999938964844" prefHeight="100" prefWidth="922.0" />-->
          </children>
       </AnchorPane>
    </children>
