@@ -6,7 +6,7 @@ public class Controlador {
 
     private ArrayList<Parada> paradas;
     private ArrayList<Ruta> rutas;
-    Map<Parada, List<Ruta>> listaAdyacencia = new HashMap<>();
+    private Map<Parada, List<Ruta>> listaAdyacencia = new HashMap<>();
     private static Controlador controlador = null;
 
     private Controlador() {
@@ -124,7 +124,7 @@ public class Controlador {
             return;
         }
 
-        if (nuevaDistancia <= 0 || nuevoCosto <= 0) {
+        if (nuevaDistancia <= 0 || nuevoCosto <= 0 || nuevoTiempo <= 0) {
             System.out.println("Error: La distancia y el costo deben ser valores positivos.");
             return;
         }
