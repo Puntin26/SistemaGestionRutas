@@ -68,8 +68,6 @@ public class HelloController {
         });
     }
 
-    //hola
-
 
 
 //    private ListView<Parada> listViewParadas;

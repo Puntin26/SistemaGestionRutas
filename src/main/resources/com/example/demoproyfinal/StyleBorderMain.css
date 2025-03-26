@@ -1,0 +1,36 @@
+.root {
+    -fx-background-color: #223;
+}
+
+#AnchorPane {
+    -fx-border-color: linear-gradient(to right, #08f, #f03);
+    -fx-border-width: 3px;
+    -fx-border-radius: 10px;
+    -fx-background-color: #2ECC71;
+}
+
+#AnchorPane:hover {
+    -fx-border-color: linear-gradient(to right, #f03, #08f);
+}
+
+/* Botón con efectos */
+.button {
+    -fx-background-color: #008287;
+    -fx-border-color: white;
+    -fx-border-width: 2px;
+    -fx-text-fill: white;
+    -fx-font-family: "Times New Roman";
+    -fx-font-size: 12px;
+    -fx-background-radius: 10px;
+    -fx-border-radius: 10px;
+}
+
+.button:hover {
+    -fx-background-color: #333333;
+}
+
+.button:pressed {
+    -fx-background-color: white;
+    -fx-text-fill: black;
+    -fx-font-weight: bold;
+}

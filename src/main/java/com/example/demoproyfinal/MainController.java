@@ -34,4 +34,22 @@ public class MainController {
             e.printStackTrace();
         }
     }
+
+    @FXML
+    private void openThridWindow() {
+        try {
+            // Cargar el FXML de la segunda ventana
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/demoproyfinal/frontEndEliminar.fxml"));
+            Scene scene = new Scene(loader.load());
+
+
+            // Crear una nueva escena y ventana
+            Stage stage = new Stage();
+            stage.setTitle("Eliminar Paradas");
+            stage.setScene(scene);
+            stage.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }

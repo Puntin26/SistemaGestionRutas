@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.net.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.shape.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="422.0" prefWidth="677.0" stylesheets="@StyleSheetBackMenu.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.demoproyfinal.MainController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="422.0" prefWidth="677.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.demoproyfinal.MainController">
    <children>
       <Pane prefHeight="422.0" prefWidth="275.0" stylesheets="@Stylesheet.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="402.0" AnchorPane.topAnchor="0.0">
          <children>
@@ -15,7 +16,7 @@
                      <children>
                         <Button layoutX="49.0" layoutY="14.0" mnemonicParsing="false" onAction="#openSecondWindow" text="Agregar paradas y rutas" />
                         <Circle fill="#2a767b" layoutX="26.0" layoutY="28.0" radius="12.0" stroke="BLACK" strokeType="INSIDE" />
-                        <Button layoutX="49.0" layoutY="63.0" mnemonicParsing="false" text="Eliminar parada" />
+                        <Button layoutX="49.0" layoutY="63.0" mnemonicParsing="false" onAction="#openThridWindow" text="Eliminar parada" />
                         <Button layoutX="49.0" layoutY="113.0" mnemonicParsing="false" text="Eliminar ruta" />
                         <Circle fill="#2a767b" layoutX="26.0" layoutY="77.0" radius="12.0" stroke="BLACK" strokeType="INSIDE" />
                         <Circle fill="#2a767b" layoutX="26.0" layoutY="127.0" radius="12.0" stroke="BLACK" strokeType="INSIDE" />
@@ -36,4 +37,8 @@
       </Pane>
       <Pane layoutX="291.0" layoutY="11.0" prefHeight="400.0" prefWidth="368.0" stylesheets="@StyleSheetBackMenu.css" />
    </children>
+   <stylesheets>
+      <URL value="@StyleSheetBackMenu.css" />
+      <URL value="@StyleBorderMain.css" />
+   </stylesheets>
 </AnchorPane>

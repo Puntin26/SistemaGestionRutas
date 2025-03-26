@@ -5,16 +5,12 @@
 
 <AnchorPane prefHeight="400.0" prefWidth="353.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.demoproyfinal.EliminarParadaController">
    <children>
-      <Pane layoutX="15.0" layoutY="34.0" prefHeight="324.0" prefWidth="318.0" stylesheets="@StyleSheetBackMenu.css">
-         <children>
-            <SplitPane layoutX="14.0" layoutY="19.0" prefHeight="292.0" prefWidth="285.0">
-               <items>
-                  <ScrollBar orientation="VERTICAL" />
-               </items>
-            </SplitPane>
-         </children></Pane>
       <Label layoutX="15.0" layoutY="14.0" text="Paradas Registradas" textAlignment="CENTER" />
+
+      <!-- ✅ ListView en lugar de VBox -->
+      <ListView fx:id="paradas" layoutX="15.0" layoutY="40.0" prefHeight="280.0" prefWidth="320.0" />
+
+      <Button fx:id="delete" layoutX="202.0" layoutY="366.0" mnemonicParsing="false" text="Eliminar" onAction="#eliminarParada" />
       <Button layoutX="271.0" layoutY="366.0" mnemonicParsing="false" text="Cancelar" />
-      <Button layoutX="202.0" layoutY="366.0" mnemonicParsing="false" text="Eliminar" />
    </children>
 </AnchorPane>

@@ -6,6 +6,17 @@
 
 #fondo { -fx-background-color: #000000; }
 
+Label {
+    -fx-border-color: #008287;
+    -fx-border-width: 2;
+    -fx-text-fill: #008287;
+    -fx-font-family: "Times New Roman";
+    -fx-font-style: italic;
+    -fx-font-size: 12px;
+    -fx-background-radius: 10 10 10 10;
+    -fx-border-radius: 10 10 10 10;
+}
+
 Button { -fx-background-color: #008287;
     -fx-border-color: #FFFFFF;
     -fx-border-width: 2;
