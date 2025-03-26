@@ -14,7 +14,6 @@ public class MainController {
 
     @FXML
     public void initialize() {
-        // Lógica de inicialización (opcional)
 
     }
 
@@ -28,7 +27,7 @@ public class MainController {
 
             // Crear una nueva escena y ventana
             Stage stage = new Stage();
-            stage.setTitle("Agregar");
+            stage.setTitle("Agregar paradas y rutas");
             stage.setScene(scene);
             stage.show();
         } catch (Exception e) {
