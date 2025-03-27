@@ -5,6 +5,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
@@ -13,8 +15,24 @@ public class MainController {
     private Button Agregar;
 
     @FXML
-    public void initialize() {
+    private ImageView miImageView; // Asegúrate que coincide con fx:id del FXML
 
+    @FXML
+    public void initialize() {
+        try {
+            // Carga la imagen desde recursos (recomendado)
+            Image imagen = new Image(getClass().getResourceAsStream("/com/example/demoproyfinal/Imagen _page-0001.jpg"));
+
+            // O desde sistema de archivos (alternativa)
+            // Image imagen = new Image("file:ruta/completa/image.png");
+
+            miImageView.setImage(imagen);
+            miImageView.setPreserveRatio(true);
+            miImageView.setSmooth(true);
+        } catch (Exception e) {
+            System.err.println("Error al cargar la imagen: " + e.getMessage());
+            // Puedes cargar una imagen por defecto aquí
+        }
     }
 
     @FXML
@@ -46,6 +64,24 @@ public class MainController {
             // Crear una nueva escena y ventana
             Stage stage = new Stage();
             stage.setTitle("Eliminar Paradas");
+            stage.setScene(scene);
+            stage.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void openFourthWindow() {
+        try {
+            // Cargar el FXML de la segunda ventana
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/demoproyfinal/frontEndEliminarRuta.fxml"));
+            Scene scene = new Scene(loader.load());
+
+
+            // Crear una nueva escena y ventana
+            Stage stage = new Stage();
+            stage.setTitle("Eliminar Rutas");
             stage.setScene(scene);
             stage.show();
         } catch (Exception e) {
