@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.net.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="422.0" prefWidth="677.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.demoproyfinal.MainController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="422.0" prefWidth="677.0" stylesheets="@Stylesheet.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.demoproyfinal.MainController">
    <children>
-      <Pane layoutX="4.0" layoutY="6.0" prefHeight="410.0" prefWidth="275.0" stylesheets="@StyleSheetBackMenu.css" AnchorPane.bottomAnchor="6.0" AnchorPane.leftAnchor="4.0" AnchorPane.rightAnchor="398.0" AnchorPane.topAnchor="6.0">
+      <Pane layoutX="7.0" layoutY="2.0" prefHeight="407.0" prefWidth="269.0" stylesheets="@Stylesheet.css" AnchorPane.bottomAnchor="13.0" AnchorPane.leftAnchor="7.0" AnchorPane.rightAnchor="401.0" AnchorPane.topAnchor="2.0">
          <children>
             <TitledPane animated="false" layoutX="14.0" layoutY="14.0" text="Menú">
               <content>
@@ -29,14 +28,10 @@
             </TitledPane>
          </children>
       </Pane>
-       <Pane layoutX="279.0" layoutY="8.0" prefHeight="404.0" prefWidth="394.0" stylesheets="@StyleSheetBackMenu.css">
+       <Pane layoutX="279.0" layoutY="20.0" prefHeight="371.0" prefWidth="376.0" stylesheets="@Stylesheet.css">
            <children>
-               <ImageView fx:id="miImageView" fitHeight="365.0" fitWidth="350.0" layoutX="18.0" layoutY="20.0" preserveRatio="true" />
+               <ImageView fx:id="miImageView" fitHeight="353.0" fitWidth="360.0" layoutX="8.0" layoutY="7.0" preserveRatio="true" />
            </children>
        </Pane>
    </children>
-   <stylesheets>
-      <URL value="@StyleSheetBackMenu.css" />
-      <URL value="@Stylesheet.css" />
-   </stylesheets>
 </AnchorPane>

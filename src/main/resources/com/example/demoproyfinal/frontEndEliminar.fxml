@@ -3,14 +3,14 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane prefHeight="400.0" prefWidth="353.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.demoproyfinal.EliminarParadaController">
+<AnchorPane prefHeight="400.0" prefWidth="353.0" stylesheets="@Stylesheet.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.demoproyfinal.EliminarParadaController">
    <children>
       <Label layoutX="15.0" layoutY="14.0" text="Paradas Registradas" textAlignment="CENTER" />
 
       <!-- ✅ ListView en lugar de VBox -->
       <ListView fx:id="paradas" layoutX="15.0" layoutY="40.0" prefHeight="280.0" prefWidth="320.0" />
 
-      <Button fx:id="delete" layoutX="202.0" layoutY="366.0" mnemonicParsing="false" text="Eliminar" onAction="#eliminarParada" />
+      <Button fx:id="delete" layoutX="202.0" layoutY="366.0" mnemonicParsing="false" onAction="#eliminarParada" text="Eliminar" />
       <Button layoutX="271.0" layoutY="366.0" mnemonicParsing="false" text="Cancelar" />
    </children>
 </AnchorPane>
