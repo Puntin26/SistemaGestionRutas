@@ -12,6 +12,8 @@ import javafx.stage.Stage;
 import org.controlsfx.control.action.Action;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 public class EliminarRutaController {
 
@@ -30,7 +32,7 @@ public class EliminarRutaController {
 
         Controlador control =  Controlador.getInstance();
 
-        rutasList = FXCollections.observableList(control.getRutas());
+        rutasList = FXCollections.observableArrayList(control.getRutas());
 
         rutas.setItems(rutasList);
 
@@ -40,13 +42,24 @@ public class EliminarRutaController {
 
     // Funcion Para eliminar
     @FXML
-    private void eliminarRutaa() {
+    private void eliminarRuta() {
         Ruta rutaSelect = rutas.getSelectionModel().getSelectedItem();
 
-        if(rutaSelect != null) {
+        if (rutaSelect != null) {
+            Controlador control = Controlador.getInstance();
+            Map<Parada, List<Ruta>> listaDeAdyacencia = control.getListaAdyacencia();
+
+            // 1. Eliminar la ruta de la lista observable (actualiza UI)
             rutasList.remove(rutaSelect);
+
+            // 2. Eliminar la ruta de la lista de rutas en el Controlador
+            control.getRutas().remove(rutaSelect);
+
+            // 3. Eliminar la ruta del mapa de adyacencia
+            listaDeAdyacencia.forEach((parada, rutas) -> rutas.remove(rutaSelect));
         }
     }
+
 
 
 

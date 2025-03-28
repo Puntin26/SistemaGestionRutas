@@ -12,6 +12,8 @@ import javafx.stage.Stage;
 import org.controlsfx.control.action.Action;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 public class EliminarParadaController {
 
@@ -27,26 +29,41 @@ public class EliminarParadaController {
 
     @FXML
     public void initialize() {
+        Controlador control = Controlador.getInstance();
 
-        Controlador control =  Controlador.getInstance();
 
-        paradasList = FXCollections.observableList(control.getParadas());
+        paradasList = FXCollections.observableArrayList(control.getListaAdyacencia().keySet());
+
 
         paradas.setItems(paradasList);
 
-        paradas.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
 
+        paradas.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
     }
+
 
     // Funcion Para eliminar
     @FXML
     private void eliminarParada() {
         Parada paradaSelect = paradas.getSelectionModel().getSelectedItem();
 
-        if(paradaSelect != null) {
+        if (paradaSelect != null) {
+            Controlador control = Controlador.getInstance();
+            Map<Parada, List<Ruta>> listaDeAdyacencia = control.getListaAdyacencia();
+
+            listaDeAdyacencia.remove(paradaSelect);
+
+            listaDeAdyacencia.forEach((parada, rutas) ->
+                    rutas.removeIf(ruta -> ruta.getOrigen().equals(paradaSelect) || ruta.getDestino().equals(paradaSelect))
+            );
+
             paradasList.remove(paradaSelect);
+
+            control.getParadas().remove(paradaSelect);
         }
     }
+
+
 
 
 
