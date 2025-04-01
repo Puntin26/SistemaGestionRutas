@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.example.demoproyfinal.ModParadaController"
+            prefHeight="400.0" prefWidth="353.0"
+            stylesheets="@Stylesheet.css">
+
+    <children>
+        <!-- Título y lista de paradas -->
+        <Label layoutX="15.0" layoutY="14.0" text="Paradas Registradas" />
+        <ListView fx:id="paradas" layoutX="15.0" layoutY="40.0" prefHeight="280.0" prefWidth="320.0" />
+
+        <!-- Campo de texto para el nuevo nombre -->
+        <Label layoutX="15.0" layoutY="327.0" text="Nuevo nombre:" />
+        <TextField fx:id="txtNuevoNombre" layoutX="110.0" layoutY="324.0" prefWidth="225.0" />
+
+        <!-- Botones -->
+        <Button fx:id="btnModificar" layoutX="202.0" layoutY="366.0" text="Modificar" onAction="#modificarParada" />
+        <Button layoutX="271.0" layoutY="366.0" text="Cancelar" />
+    </children>
+</AnchorPane>

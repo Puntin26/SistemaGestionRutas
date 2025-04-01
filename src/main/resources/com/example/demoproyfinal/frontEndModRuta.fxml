@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.example.demoproyfinal.FrontEndModRuta"
+            prefHeight="400.0" prefWidth="400.0"
+            stylesheets="@Stylesheet.css">
+
+    <children>
+        <!-- Título y lista de rutas -->
+        <Label layoutX="15.0" layoutY="14.0" text="Rutas Registradas" />
+        <ListView fx:id="listRutas" layoutX="15.0" layoutY="40.0"
+                  prefHeight="200.0" prefWidth="370.0" />
+
+        <!-- Etiquetas / Campos para los nuevos valores -->
+        <Label layoutX="15.0" layoutY="255.0" text="Distancia:" />
+        <TextField fx:id="txtDistancia" layoutX="90.0" layoutY="252.0" prefWidth="80.0" />
+
+        <Label layoutX="190.0" layoutY="255.0" text="Costo:" />
+        <TextField fx:id="txtCosto" layoutX="240.0" layoutY="252.0" prefWidth="60.0" />
+
+        <Label layoutX="15.0" layoutY="292.0" text="Tiempo:" />
+        <TextField fx:id="txtTiempo" layoutX="90.0" layoutY="289.0" prefWidth="80.0" />
+
+        <!-- Botones -->
+        <Button fx:id="btnModificar"
+                layoutX="200.0" layoutY="355.0"
+                text="Modificar" onAction="#modificarRuta" />
+        <Button layoutX="280.0" layoutY="355.0"
+                text="Cancelar" />
+    </children>
+</AnchorPane>

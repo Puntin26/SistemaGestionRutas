@@ -87,5 +87,22 @@ public class MainController {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+    }
+    @FXML
+    private void openModifyParadaWindow() {
+        try {
+            // Cargar el FXML de modificar parada
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/demoproyfinal/frontEndModParada.fxml"));
+            Scene scene = new Scene(loader.load());
+
+            // Crear una nueva ventana
+            Stage stage = new Stage();
+            stage.setTitle("Modificar Parada");
+            stage.setScene(scene);
+            stage.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
