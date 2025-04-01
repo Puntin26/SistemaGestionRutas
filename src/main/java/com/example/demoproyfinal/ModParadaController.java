@@ -26,11 +26,9 @@ public class ModParadaController {
 
     @FXML
     public void initialize() {
-        // Carga la lista de paradas actuales usando el controlador singleton
         Controlador control = Controlador.getInstance();
 
-        // Usamos las claves del mapa de adyacencia para poblar la lista (o directamente control.getParadas())
-        // De esta manera mantenemos consistencia con EliminarParadaController
+
         paradasList = FXCollections.observableArrayList(control.getListaAdyacencia().keySet());
         paradas.setItems(paradasList);
         paradas.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
@@ -38,20 +36,18 @@ public class ModParadaController {
 
     @FXML
     private void modificarParada() {
-        // Recupera la parada seleccionada en la lista
+
         Parada paradaSeleccionada = paradas.getSelectionModel().getSelectedItem();
+
         if (paradaSeleccionada != null) {
-            // Toma el nuevo nombre del TextField
             String nuevoNombre = txtNuevoNombre.getText().trim();
+
             if (!nuevoNombre.isEmpty()) {
-                // Invocamos el método de modificarParada en el Controlador
                 Controlador.getInstance().modificarParada(paradaSeleccionada, nuevoNombre);
 
-                // Refrescamos visualmente la ListView
-                // Al cambiar el nombre internamente, a veces basta con llamar a refresh
+
                 paradas.refresh();
 
-                // (Opcional) Limpiar el TextField
                 txtNuevoNombre.clear();
             }
         }
