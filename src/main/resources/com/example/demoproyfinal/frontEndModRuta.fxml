@@ -1,4 +1,3 @@
-
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.*?>
@@ -11,26 +10,19 @@
             stylesheets="@Stylesheet.css">
 
     <children>
-
         <Label layoutX="15.0" layoutY="14.0" text="Rutas Registradas" />
-        <ListView fx:id="rutas" layoutX="15.0" layoutY="40.0"
-                  prefHeight="200.0" prefWidth="370.0" />
+        <ListView fx:id="rutas" layoutX="15.0" layoutY="40.0" prefHeight="220.0" prefWidth="370.0" />
 
+        <Label layoutX="15.0" layoutY="280.0" text="Distancia:" />
+        <TextField fx:id="txtDistancia" layoutX="80.0" layoutY="277.0" prefWidth="70.0" />
 
-        <Label layoutX="15.0" layoutY="255.0" text="Distancia:" />
-        <TextField fx:id="txtDistancia" layoutX="90.0" layoutY="252.0" prefWidth="80.0" />
+        <Label layoutX="170.0" layoutY="280.0" text="Costo:" />
+        <TextField fx:id="txtCosto" layoutX="215.0" layoutY="277.0" prefWidth="60.0" />
 
-        <Label layoutX="190.0" layoutY="255.0" text="Costo:" />
-        <TextField fx:id="txtCosto" layoutX="240.0" layoutY="252.0" prefWidth="60.0" />
+        <Label layoutX="290.0" layoutY="280.0" text="Tiempo:" />
+        <TextField fx:id="txtTiempo" layoutX="340.0" layoutY="277.0" prefWidth="45.0" />
 
-        <Label layoutX="15.0" layoutY="292.0" text="Tiempo:" />
-        <TextField fx:id="txtTiempo" layoutX="90.0" layoutY="289.0" prefWidth="80.0" />
-
-
-        <Button fx:id="btnModificar"
-                layoutX="200.0" layoutY="355.0"
-                text="Modificar" onAction="#modificarRuta" />
-        <Button layoutX="280.0" layoutY="355.0"
-                text="Cancelar" />
+        <Button fx:id="btnModificar" layoutX="250.0" layoutY="340.0" text="Modificar" onAction="#modificarRuta" />
+        <Button layoutX="320.0" layoutY="340.0" text="Cancelar" />
     </children>
 </AnchorPane>
