@@ -121,6 +121,21 @@ public class MainController {
         }
     }
 
+    @FXML
+    private void openGestionRutaWindow() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/demoproyfinal/frontEndGestionRuta.fxml"));
+            Scene scene = new Scene(loader.load());
+
+            Stage stage = new Stage();
+            stage.setTitle("Gestionar Ruta");
+            stage.setScene(scene);
+            stage.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 
 
 }

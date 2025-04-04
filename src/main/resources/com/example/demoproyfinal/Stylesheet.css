@@ -11,6 +11,10 @@ Pane{
     -fx-background-color: #008287;
 }
 
+AnchorPane{
+    -fx-border-color: #000000;
+}
+
 Label {
     -fx-border-color: #008287;
     -fx-border-width: 2;
