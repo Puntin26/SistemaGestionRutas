@@ -73,7 +73,7 @@ public class Ruta {
                 "\nD: " + distancia + " km\n$: " + costo + " RD$\nT: " + tiempo +"min" ;    }
 
     public String toString2() {
-        return + distancia + " km\n$" + costo +"\n" + tiempo + " min";
+        return + distancia + " km\n$" + costo +"\n" + tiempo + " m";
     }
 
 

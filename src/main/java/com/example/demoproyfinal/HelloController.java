@@ -51,12 +51,15 @@ public class HelloController {
             graph.insertEdge(r.getOrigen(), r.getDestino(), r);
         }
 
-        graphView = new SmartGraphPanel<>(graph);//panel de visualizacion
+        graphView = new SmartGraphPanel<>(graph, new SmartCircularSortedPlacementStrategy());
+        graphView.getStylesheets().add(getClass().getResource("/com/example/demoproyfinal/Stylesheet.css").toExternalForm());
+
 
         AnchorPane.setTopAnchor(graphView, 0.0);
         AnchorPane.setBottomAnchor(graphView, 0.0);
         AnchorPane.setLeftAnchor(graphView, 0.0);
         AnchorPane.setRightAnchor(graphView, 0.0);
+
 
         graphContainer.getChildren().clear();
         graphContainer.getChildren().add(graphView);
@@ -64,7 +67,9 @@ public class HelloController {
         //iniciar con runLater (evita error)
         Platform.runLater(() -> {
             graphView.init();
+            graphView.setAutomaticLayout(true);
             graphView.update();
+
         });
     }
 
@@ -85,6 +90,8 @@ public class HelloController {
             txtParada.clear();
             graph.insertVertex(nueva);
             graphView.update();
+
+
         }
     }
 

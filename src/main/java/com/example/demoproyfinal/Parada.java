@@ -20,6 +20,6 @@ public class Parada {
 
     @Override
     public String toString() {
-        return "Parada: " + nombre;
+        return nombre;
     }
 }

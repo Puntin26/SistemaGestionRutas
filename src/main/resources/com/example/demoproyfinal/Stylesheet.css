@@ -50,4 +50,13 @@ Button:pressed { -fx-background-color: #FFFFFF;
     -fx-text-fill: #000000;
     -fx-font-weight: bold;
 }
+.smart-graph-vertex {
+    -fx-fill: #3498db;
+    -fx-stroke: black;
+}
+
+.smart-graph-edge {
+    -fx-stroke: #2ecc71;
+    -fx-stroke-width: 2px;
+}
 
