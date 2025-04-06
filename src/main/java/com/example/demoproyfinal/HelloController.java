@@ -3,13 +3,17 @@ package com.example.demoproyfinal;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import com.brunomnsilva.smartgraph.graph.*;
 import com.brunomnsilva.smartgraph.graphview.*;
 import javafx.scene.layout.AnchorPane;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import java.util.Objects;
 
 public class HelloController {
 
@@ -36,40 +40,76 @@ public class HelloController {
 
     private Graph<Parada, Ruta> graph;
     private SmartGraphPanel<Parada, Ruta> graphView;
+    private boolean graphViewInitialized = false;
 
+    // Modifica tu método initialize() así:
     @FXML
     public void initialize() {
-        graph = new GraphEdgeList<>();// esto tambien resetea el grafo
+        // Limpiar el grafo existente
+        graph = new GraphEdgeList<>();
 
-        // paradas = vertices
-        for (Parada p : Controlador.getInstance().getParadas()) {
-            graph.insertVertex(p);
+        // Obtener datos actualizados del Controlador
+        List<Parada> paradasActuales = new ArrayList<>(Controlador.getInstance().getParadas());
+        List<Ruta> rutasActuales = new ArrayList<>(Controlador.getInstance().getRutas());
+
+        // Insertar solo paradas válidas
+        for (Parada p : paradasActuales) {
+            try {
+                graph.insertVertex(p);
+            } catch (Exception e) {
+                System.err.println("Error insertando parada: " + p.getNombre());
+            }
         }
 
-        //ruta = arista
-        for (Ruta r : Controlador.getInstance().getRutas()) {
-            graph.insertEdge(r.getOrigen(), r.getDestino(), r);
+        // Insertar solo rutas con paradas existentes
+        for (Ruta r : rutasActuales) {
+            try {
+                // Verificar que ambas paradas existen en el grafo
+                if (graph.vertices().stream().anyMatch(v -> v.element().equals(r.getOrigen())) &&
+                        graph.vertices().stream().anyMatch(v -> v.element().equals(r.getDestino()))) {
+                    graph.insertEdge(r.getOrigen(), r.getDestino(), r);
+                }
+            } catch (Exception e) {
+                System.err.println("Error insertando ruta: " + r + " - " + e.getMessage());
+            }
         }
 
+        // Crear el panel del grafo
         graphView = new SmartGraphPanel<>(graph, new SmartCircularSortedPlacementStrategy());
-        graphView.getStylesheets().add(getClass().getResource("/com/example/demoproyfinal/Stylesheet.css").toExternalForm());
 
+        // Configurar explícitamente el tamaño del graphView
+        graphView.setPrefSize(1140, 250);
+        graphView.setMinSize(400, 200); // Asegura un tamaño mínimo
 
-        AnchorPane.setTopAnchor(graphView, 0.0);
-        AnchorPane.setBottomAnchor(graphView, 0.0);
-        AnchorPane.setLeftAnchor(graphView, 0.0);
-        AnchorPane.setRightAnchor(graphView, 0.0);
-
-
+        // Añadir el graphView al contenedor
         graphContainer.getChildren().clear();
         graphContainer.getChildren().add(graphView);
 
-        //iniciar con runLater (evita error)
-        Platform.runLater(() -> {
-            graphView.init();
-            graphView.setAutomaticLayout(true);
-            graphView.update();
+        // Ajustar graphView para que ocupe todo el espacio del contenedor
+        AnchorPane.setTopAnchor(graphView, 0.0);
+        AnchorPane.setRightAnchor(graphView, 0.0);
+        AnchorPane.setBottomAnchor(graphView, 0.0);
+        AnchorPane.setLeftAnchor(graphView, 0.0);
 
+        // Inicializar después de estar en la escena
+        Platform.runLater(() -> {
+            try {
+                // Asegúrate de que el contenedor tiene dimensiones
+                if (graphContainer.getWidth() <= 0 || graphContainer.getHeight() <= 0) {
+                    graphContainer.setPrefSize(1140, 250);
+                    graphContainer.setMinSize(400, 200);
+                }
+
+                // Es crucial llamar a init() solo una vez cuando la vista está lista
+                if (!graphViewInitialized) {
+                    graphView.init();
+                    graphViewInitialized = true;
+                    System.out.println("Grafo inicializado correctamente");
+                }
+            } catch (Exception e) {
+                System.err.println("Error al inicializar el grafo: " + e.getMessage());
+                e.printStackTrace();
+            }
         });
     }
 
@@ -86,12 +126,39 @@ public class HelloController {
         if (!nombre.isEmpty()) {
             Parada nueva = new Parada(nombre);
             Controlador.getInstance().insertarParada(nueva);
-            //refrescarListas();
             txtParada.clear();
-            graph.insertVertex(nueva);
-            graphView.update();
 
+            try {
+                graph.insertVertex(nueva);
 
+                // Verificar que el graphView esté inicializado antes de actualizarlo
+                if (graphViewInitialized && graphView != null) {
+                    Platform.runLater(() -> {
+                        try {
+                            graphView.update();
+                        } catch (Exception e) {
+                            System.err.println("Error al actualizar el grafo: " + e.getMessage());
+                            e.printStackTrace();
+                        }
+                    });
+                } else {
+                    System.out.println("GraphView no inicializado aún, no se puede actualizar");
+                    // Reintentar inicializar si es necesario
+                    if (graphView != null && !graphViewInitialized) {
+                        Platform.runLater(() -> {
+                            try {
+                                graphView.init();
+                                graphViewInitialized = true;
+                                graphView.update();
+                            } catch (Exception e) {
+                                System.err.println("Error al inicializar el grafo: " + e.getMessage());
+                            }
+                        });
+                    }
+                }
+            } catch (Exception e) {
+                System.err.println("Error al insertar vértice: " + e.getMessage());
+            }
         }
     }
 
@@ -103,46 +170,87 @@ public class HelloController {
         String costoStr = txtCosto.getText().trim();
         String timeStr = txtTiempo.getText().trim();
 
-        if (!origen.isEmpty() && !destino.isEmpty() && !distStr.isEmpty() && !costoStr.isEmpty() && !timeStr.isEmpty()) {
-            try {
-                int dist = Integer.parseInt(distStr);
-                float cost = Float.parseFloat(costoStr);
-                int tim = Integer.parseInt(timeStr);
+        if (origen.isEmpty() || destino.isEmpty() || distStr.isEmpty() || costoStr.isEmpty() || timeStr.isEmpty()) {
+            return;
+        }
 
-                // Buscamos las paradas (origen/destino) en la lista
-                Parada pOrigen = null;
-                Parada pDestino = null;
-                for (Parada p : Controlador.getInstance().getParadas()) {
-                    if (p.getNombre().equalsIgnoreCase(origen)) {
-                        pOrigen = p;
-                    }
-                    if (p.getNombre().equalsIgnoreCase(destino)) {
-                        pDestino = p;
-                    }
-                }
+        try {
+            int dist = Integer.parseInt(distStr);
+            float cost = Float.parseFloat(costoStr);
+            int tim = Integer.parseInt(timeStr);
 
-                // Si ambas paradas existen, creamos la ruta
-                if (pOrigen != null && pDestino != null) {
-                    Ruta ruta = new Ruta(pOrigen, pDestino, dist, cost, tim);
-                    Controlador.getInstance().insertarRuta(ruta);
-                    //refrescarListas();
-                    txtOrigen.clear();
-                    txtDestino.clear();
-                    txtDistancia.clear();
-                    txtCosto.clear();
-                    txtTiempo.clear();
-
-                    graph.insertEdge(pOrigen, pDestino, ruta);
-                    graphView.update();
-                }
-            } catch (NumberFormatException e) {
-                System.out.println("Error en los valores de distancia/costo.");
+            if (dist <= 0 || cost <= 0 || tim <= 0) {
+                return;
             }
+
+            Parada pOrigen = null;
+            Parada pDestino = null;
+            for (Parada p : Controlador.getInstance().getParadas()) {
+                if (p.getNombre().equalsIgnoreCase(origen)) {
+                    pOrigen = p;
+                }
+                if (p.getNombre().equalsIgnoreCase(destino)) {
+                    pDestino = p;
+                }
+            }
+
+            if (pOrigen == null || pDestino == null || pOrigen.equals(pDestino)) {
+                return;
+            }
+            Parada finalOrigen = pOrigen;
+            boolean origenEnGrafo = graph.vertices().stream()
+                    .anyMatch(v -> v.element().equals(finalOrigen));
+            Parada finalDestino = pDestino;
+            boolean destinoEnGrafo = graph.vertices().stream()
+                    .anyMatch(v -> v.element().equals(finalDestino));
+
+            if (!origenEnGrafo || !destinoEnGrafo) {
+                return;
+            }
+
+            boolean rutaExistente = graph.edges().stream()
+                    .anyMatch(e -> e.element().getOrigen().equals(finalOrigen) &&
+                            e.element().getDestino().equals(finalDestino));
+
+            if (rutaExistente) {
+                return;
+            }
+
+            Ruta nuevaRuta = new Ruta(pOrigen, pDestino, dist, cost, tim);
+            Controlador.getInstance().insertarRuta(nuevaRuta);
+            graph.insertEdge(pOrigen, pDestino, nuevaRuta);
+
+            if (graphViewInitialized && graphView != null) {
+                Platform.runLater(() -> {
+                    try {
+                        graphView.update();
+                    } catch (Exception e) {
+                        System.err.println("Error al actualizar el grafo: " + e.getMessage());
+                        e.printStackTrace();
+                    }
+                });
+            }
+            
+            //Platform.runLater(() -> graphView.update());
+
+            txtOrigen.clear();
+            txtDestino.clear();
+            txtDistancia.clear();
+            txtCosto.clear();
+            txtTiempo.clear();
+
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
+
 
 //    private void refrescarListas() {
 //        listViewParadas.getItems().setAll(Controlador.getInstance().getParadas());
 //        listViewRutas.getItems().setAll(Controlador.getInstance().getRutas());
 //    }
 }
+
+

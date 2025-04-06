@@ -1,5 +1,8 @@
 package com.example.demoproyfinal;
 
+import com.brunomnsilva.smartgraph.graph.Graph;
+import com.brunomnsilva.smartgraph.graph.GraphEdgeList;
+import com.brunomnsilva.smartgraph.graph.Vertex;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.application.Application;
@@ -26,14 +29,25 @@ public class EliminarParadaController {
     @FXML
     private ObservableList<Parada> paradasList;
 
+    @FXML
+    private Graph<Parada, Ruta> graph;
+
 
     @FXML
     public void initialize() {
         Controlador control = Controlador.getInstance();
 
+        graph = new GraphEdgeList<>();
+
+        for (Parada p : Controlador.getInstance().getParadas()) {
+            graph.insertVertex(p);
+        }
+
+        for (Ruta r : Controlador.getInstance().getRutas()) {
+            graph.insertEdge(r.getOrigen(), r.getDestino(), r);
+        }
 
         paradasList = FXCollections.observableArrayList(control.getListaAdyacencia().keySet());
-
 
         paradas.setItems(paradasList);
 
@@ -49,17 +63,22 @@ public class EliminarParadaController {
 
         if (paradaSelect != null) {
             Controlador control = Controlador.getInstance();
-            Map<Parada, List<Ruta>> listaDeAdyacencia = control.getListaAdyacencia();
 
-            listaDeAdyacencia.remove(paradaSelect);
+            // 1. Eliminar del grafo
+            Vertex<Parada> vertexToRemove = graph.vertices().stream()
+                    .filter(v -> v.element().equals(paradaSelect))
+                    .findFirst()
+                    .orElse(null);
 
-            listaDeAdyacencia.forEach((parada, rutas) ->
-                    rutas.removeIf(ruta -> ruta.getOrigen().equals(paradaSelect) || ruta.getDestino().equals(paradaSelect))
-            );
+            if (vertexToRemove != null) {
+                graph.removeVertex(vertexToRemove);
+            }
 
+            // 2. Eliminar del controlador
+            control.eliminarParadaCompletamente(paradaSelect);
+
+            // 3. Actualizar la lista visual
             paradasList.remove(paradaSelect);
-
-            control.getParadas().remove(paradaSelect);
         }
     }
 

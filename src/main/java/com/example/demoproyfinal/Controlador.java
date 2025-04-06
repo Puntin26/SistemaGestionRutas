@@ -118,6 +118,23 @@ public class Controlador {
         //System.out.println("Parada modificada correctamente.");
     }
 
+    public void eliminarParadaCompletamente(Parada parada) {
+        // Eliminar de la lista principal
+        paradas.remove(parada);
+
+        // Eliminar de la lista de adyacencia
+        listaAdyacencia.remove(parada);
+
+        // Eliminar todas las rutas que hacen referencia a esta parada
+        List<Ruta> rutasAEliminar = new ArrayList<>();
+        for (List<Ruta> rutas : listaAdyacencia.values()) {
+            rutas.removeIf(r -> r.getOrigen().equals(parada) || r.getDestino().equals(parada));
+        }
+
+        // También eliminar de la lista general de rutas si la tienes
+        getRutas().removeIf(r -> r.getOrigen().equals(parada) || r.getDestino().equals(parada));
+    }
+
     public void modificarRuta(Ruta ruta, int nuevaDistancia, float nuevoCosto, int nuevoTiempo) {
         if (ruta == null || !rutas.contains(ruta)) {
             System.out.println("Error: La ruta no existe en el sistema.");
