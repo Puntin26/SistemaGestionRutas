@@ -28,7 +28,7 @@ public class GestionRutasController {
     @FXML private Button btnDistancia;
     @FXML private Button btnTiempo;
     @FXML private Button btnPrecio;
-    @FXML private Button btnVacio;
+    @FXML private Button btnTransbordos;
 
     private Graph<Parada, Ruta> graph;
     private SmartGraphPanel<Parada, Ruta> graphView;
@@ -45,9 +45,20 @@ public class GestionRutasController {
 
         Controlador control = Controlador.getInstance();
 
-        control.getParadas().forEach(graph::insertVertex);
-        control.getRutas().forEach(r ->
-                graph.insertEdge(r.getOrigen(), r.getDestino(), r));
+        for (Parada p : control.getParadas()) {
+            boolean exists = graph.vertices().stream().anyMatch(v -> v.element().equals(p));
+            if (!exists) {
+                graph.insertVertex(p);
+            }
+        }
+
+        for (Ruta r : control.getRutas()) {
+            boolean origenExiste = graph.vertices().stream().anyMatch(v -> v.element().equals(r.getOrigen()));
+            boolean destinoExiste = graph.vertices().stream().anyMatch(v -> v.element().equals(r.getDestino()));
+            if (origenExiste && destinoExiste) {
+                graph.insertEdge(r.getOrigen(), r.getDestino(), r);
+            }
+        }
 
         graphView = new SmartGraphPanel<>(
                 graph,
@@ -74,7 +85,7 @@ public class GestionRutasController {
 
 
     private void inicializarBotones() {
-        List<Button> botones = List.of(btnDistancia, btnTiempo, btnPrecio, btnVacio);
+        List<Button> botones = List.of(btnDistancia, btnTiempo, btnPrecio, btnTransbordos);
         botones.forEach(b -> b.setOnAction(e ->
                 System.out.println("Funcionalidad pendiente para: " + ((Button) e.getSource()).getText())));
     }

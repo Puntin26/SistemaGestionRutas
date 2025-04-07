@@ -54,6 +54,8 @@ public class EliminarRutaController {
 
             // 2. Eliminar la ruta de la lista de rutas en el Controlador
             control.getRutas().remove(rutaSelect);
+            RutaDAO dao = new RutaDAO();
+            dao.eliminarRuta(rutaSelect);
 
             // 3. Eliminar la ruta del mapa de adyacencia
             listaDeAdyacencia.forEach((parada, rutas) -> rutas.remove(rutaSelect));

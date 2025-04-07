@@ -42,15 +42,27 @@ public class HelloController {
     private SmartGraphPanel<Parada, Ruta> graphView;
     private boolean graphViewInitialized = false;
 
-    // Modifica tu método initialize() así:
     @FXML
     public void initialize() {
+
+        ParadaDAO paradaDAO = new ParadaDAO();
+        List<Parada> paradasBD = paradaDAO.obtenerParadas();
+        RutaDAO rutaDAO = new RutaDAO();
+        List<Ruta> rutasBD = rutaDAO.obtenerrutas();
+
+        Controlador.getInstance().setParadas((ArrayList<Parada>) paradasBD);
+        Controlador.getInstance().setRutas((ArrayList<Ruta>) rutasBD);
+        // Asignar estos datos al controlador (suponiendo que tienes setters o que se inicializan)
+
+        List<Parada> paradasActuales = new ArrayList<>(Controlador.getInstance().getParadas());
+        List<Ruta> rutasActuales = new ArrayList<>(Controlador.getInstance().getRutas());
+
+
         // Limpiar el grafo existente
         graph = new GraphEdgeList<>();
 
         // Obtener datos actualizados del Controlador
-        List<Parada> paradasActuales = new ArrayList<>(Controlador.getInstance().getParadas());
-        List<Ruta> rutasActuales = new ArrayList<>(Controlador.getInstance().getRutas());
+
 
         // Insertar solo paradas válidas
         for (Parada p : paradasActuales) {
@@ -85,7 +97,6 @@ public class HelloController {
         graphContainer.getChildren().clear();
         graphContainer.getChildren().add(graphView);
 
-        // Ajustar graphView para que ocupe todo el espacio del contenedor
         AnchorPane.setTopAnchor(graphView, 0.0);
         AnchorPane.setRightAnchor(graphView, 0.0);
         AnchorPane.setBottomAnchor(graphView, 0.0);
@@ -127,6 +138,8 @@ public class HelloController {
         if (!nombre.isEmpty()) {
             Parada nueva = new Parada(nombre);
             Controlador.getInstance().insertarParada(nueva);
+            ParadaDAO dao = new ParadaDAO();
+            dao.insertarParada(nueva);
             txtParada.clear();
 
             try {
@@ -219,6 +232,8 @@ public class HelloController {
 
             Ruta nuevaRuta = new Ruta(pOrigen, pDestino, dist, cost, tim);
             Controlador.getInstance().insertarRuta(nuevaRuta);
+            RutaDAO dao = new RutaDAO();
+            dao.insertarRuta(nuevaRuta);
             graph.insertEdge(pOrigen, pDestino, nuevaRuta);
 
             if (graphViewInitialized && graphView != null) {

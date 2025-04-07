@@ -40,14 +40,20 @@ public class EliminarParadaController {
         graph = new GraphEdgeList<>();
 
         for (Parada p : Controlador.getInstance().getParadas()) {
-            graph.insertVertex(p);
+            boolean exists = graph.vertices().stream().anyMatch(v -> v.element().equals(p));
+            if (!exists) {
+                graph.insertVertex(p);
+            }
         }
 
-        for (Ruta r : Controlador.getInstance().getRutas()) {
-            graph.insertEdge(r.getOrigen(), r.getDestino(), r);
+        for (Ruta r : control.getRutas()) {
+            // Es posible que debas verificar si ambos vértices existen antes de insertar
+            if (graph.vertices().stream().anyMatch(v -> v.element().equals(r.getOrigen())) &&
+                    graph.vertices().stream().anyMatch(v -> v.element().equals(r.getDestino()))) {
+                graph.insertEdge(r.getOrigen(), r.getDestino(), r);
+            }
         }
-
-        paradasList = FXCollections.observableArrayList(control.getListaAdyacencia().keySet());
+        paradasList = FXCollections.observableArrayList(control.getParadas());
 
         paradas.setItems(paradasList);
 
@@ -76,6 +82,11 @@ public class EliminarParadaController {
 
             // 2. Eliminar del controlador
             control.eliminarParadaCompletamente(paradaSelect);
+            ParadaDAO dao = new ParadaDAO();
+            dao.eliminarParada(paradaSelect);
+
+            RutaDAO rutaDAO = new RutaDAO();
+            rutaDAO.eliminarRutasPorParada(paradaSelect);
 
             // 3. Actualizar la lista visual
             paradasList.remove(paradaSelect);

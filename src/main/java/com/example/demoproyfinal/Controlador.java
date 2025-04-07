@@ -71,7 +71,12 @@ public class Controlador {
         }
 
         this.rutas.add(ruta);
-        this.listaAdyacencia.get(ruta.getOrigen()).add(ruta);
+
+        // Verificar que exista una lista para la parada origen; si no, crearla.
+        if (!listaAdyacencia.containsKey(ruta.getOrigen())) {
+            listaAdyacencia.put(ruta.getOrigen(), new ArrayList<>());
+        }
+        listaAdyacencia.get(ruta.getOrigen()).add(ruta);
         System.out.println("Ruta agregada correctamente.");
     }
 

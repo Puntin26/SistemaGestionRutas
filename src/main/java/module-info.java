@@ -6,6 +6,7 @@ module com.example.demoproyfinal {
     requires com.dlsc.formsfx;
     requires org.kordamp.bootstrapfx.core;
     requires smartgraph;
+    requires java.sql;
 
     opens com.example.demoproyfinal to javafx.fxml;
     exports com.example.demoproyfinal;

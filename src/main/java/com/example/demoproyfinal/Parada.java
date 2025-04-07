@@ -1,6 +1,6 @@
 package com.example.demoproyfinal;
 
-import java.util.Date;
+import java.util.Objects;
 
 public class Parada {
 
@@ -21,5 +21,18 @@ public class Parada {
     @Override
     public String toString() {
         return nombre;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Parada)) return false;
+        Parada parada = (Parada) o;
+        return Objects.equals(nombre, parada.nombre);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(nombre);
     }
 }

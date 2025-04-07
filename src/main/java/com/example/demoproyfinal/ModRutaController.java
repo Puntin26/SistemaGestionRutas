@@ -53,6 +53,8 @@ public class ModRutaController {
                 int nuevoTiempo = Integer.parseInt(txtTiempo.getText().trim());
 
                 Controlador.getInstance().modificarRuta(rutaSeleccionada, nuevaDistancia, nuevoCosto, nuevoTiempo);
+                RutaDAO dao = new RutaDAO();
+                dao.actualizarRuta(rutaSeleccionada);
 
                 rutas.refresh();
 
