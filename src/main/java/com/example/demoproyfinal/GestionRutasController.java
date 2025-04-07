@@ -16,7 +16,6 @@ import java.util.Map;
 
 public class GestionRutasController {
 
-    /* ---------- FXML ---------- */
     @FXML private AnchorPane graphContainer;
     @FXML private Pane        panelCalculos;
     @FXML private Pane        panelExtra;
@@ -26,19 +25,15 @@ public class GestionRutasController {
     @FXML private Button btnPrecio;
     @FXML private Button btnTransbordos;
 
-    /* ---------- datos ---------- */
     private Graph<Parada,Ruta>           graph;
     private SmartGraphPanel<Parada,Ruta> graphView;
 
-    /* ---------- selección ---------- */
     private Parada  origenSel  = null;
     private Parada  destinoSel = null;
     private boolean esperando  = false;
 
-    /* ---------- UI ---------- */
     private final Label lblResultado = new Label();
 
-    /* =========================================================== */
 
     @FXML
     public void initialize() {
@@ -47,7 +42,6 @@ public class GestionRutasController {
         prepararBotones();
     }
 
-    /* ----------------  grafo  ---------------- */
     private void crearGrafo() {
         graph = new GraphEdgeList<>();
         Controlador c = Controlador.getInstance();
@@ -67,7 +61,6 @@ public class GestionRutasController {
             graphView.init();
             graphView.setAutomaticLayout(true);
 
-            /*  ←–  asignamos clic a cada vértice   */
             for (Vertex<Parada> v : graph.vertices()) {
                 SmartGraphVertexNode node =
                         (SmartGraphVertexNode) graphView.getStylableVertex(v);
@@ -77,7 +70,6 @@ public class GestionRutasController {
         });
     }
 
-    /* ----------------  panel inferior  ---------------- */
     private void prepararPanelExtra() {
         lblResultado.setWrapText(true);
         lblResultado.setStyle("-fx-text-fill:white;");
@@ -87,16 +79,13 @@ public class GestionRutasController {
         panelExtra.getChildren().add(lblResultado);
     }
 
-    /* ----------------  botones  ---------------- */
     private void prepararBotones() {
 
-        /* ---- botón de distancia (único implementado) ---- */
         btnDistancia.setOnAction(e -> {
             esperando   = true;
             origenSel   = null;
             destinoSel  = null;
             lblResultado.setText("Seleccione la parada de ORIGEN.");
-            /* limpiamos estilos */
             graph.vertices().forEach(v -> {
                 SmartGraphVertexNode n =
                         (SmartGraphVertexNode) graphView.getStylableVertex(v);
@@ -104,20 +93,14 @@ public class GestionRutasController {
             });
         });
 
-        /* los demás se mantienen pendientes */
         btnTiempo.setOnAction     (e -> System.out.println("Pendiente: tiempo"));
         btnPrecio.setOnAction     (e -> System.out.println("Pendiente: precio"));
         btnTransbordos.setOnAction(e -> System.out.println("Pendiente: transbordos"));
     }
 
-    /* =========================================================== */
-    /* =================  LÓGICA DE SELECCIÓN  =================== */
-    /* =========================================================== */
-
     private void procesarClickVertice(Vertex<Parada> v, SmartGraphVertexNode node) {
         if (!esperando) return;
 
-        /* -------- origen -------- */
         if (origenSel == null) {
             origenSel = v.element();
             node.setStyle("-fx-fill: #f1c40f;");          // amarillo
@@ -126,7 +109,6 @@ public class GestionRutasController {
             return;
         }
 
-        /* -------- destino -------- */
         if (destinoSel == null && !v.element().equals(origenSel)) {
             destinoSel  = v.element();
             node.setStyle("-fx-fill: #e67e22;");          // naranja
@@ -135,7 +117,6 @@ public class GestionRutasController {
         }
     }
 
-    /* ----------------  cálculo y salida  ---------------- */
     private void calcularRuta() {
         Map<Parada,List<Ruta>> ady = Controlador.getInstance().getListaAdyacencia();
         List<Parada> camino = AlgoritmosGrafo.dijkstra(ady, origenSel, destinoSel);
