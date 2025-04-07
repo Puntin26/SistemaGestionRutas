@@ -1,13 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" stylesheets="@Stylesheet.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.demoproyfinal.GestionRutasController">
-   <children>
-       <AnchorPane fx:id="graphContainer" layoutX="14.0" layoutY="14.0" prefHeight="370.0" prefWidth="403.0" style="-fx-border-color: rgba(153,153,153,0.36); -fx-border-width: 1;">
-       </AnchorPane>
-      <Pane layoutX="427.0" layoutY="14.0" prefHeight="180.0" prefWidth="166.0" />
-      <Pane layoutX="427.0" layoutY="215.0" prefHeight="170.0" prefWidth="166.0" />
-   </children>
+<AnchorPane prefHeight="400.0" prefWidth="600.0"
+            stylesheets="@Stylesheet.css"
+            xmlns="http://javafx.com/javafx/17.0.12"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.example.demoproyfinal.GestionRutasController">
 
+    <AnchorPane fx:id="graphContainer"
+                layoutX="14.0" layoutY="14.0"
+                prefHeight="370.0" prefWidth="403.0"
+                style="-fx-border-color: rgba(153,153,153,0.36); -fx-border-width: 1;" />
+
+    <Pane fx:id="panelCalculos"
+          layoutX="427.0" layoutY="14.0"
+          prefHeight="180.0" prefWidth="166.0">
+
+        <VBox spacing="10" AnchorPane.topAnchor="10" AnchorPane.leftAnchor="10">
+            <Button fx:id="btnDistancia" text="Cálculo por distancia" />
+            <Button fx:id="btnTiempo"    text="Cálculo por tiempo"    />
+            <Button fx:id="btnPrecio"    text="Cálculo por precio"    />
+            <Button fx:id="btnVacio"     text="" />  <!-- reservado pa lo quieras hacer -->
+        </VBox>
+    </Pane>
+
+    <Pane fx:id="panelExtra"
+          layoutX="427.0" layoutY="215.0"
+          prefHeight="170.0" prefWidth="166.0" />
 </AnchorPane>

@@ -103,6 +103,7 @@ public class HelloController {
                 // Es crucial llamar a init() solo una vez cuando la vista está lista
                 if (!graphViewInitialized) {
                     graphView.init();
+                    graphView.setAutomaticLayout(true);
                     graphViewInitialized = true;
                     System.out.println("Grafo inicializado correctamente");
                 }
