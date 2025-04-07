@@ -32,8 +32,10 @@ public class GestionRutasController {
     private Parada  destinoSel = null;
     private boolean esperando  = false;
 
-    private final Label lblResultado = new Label();
+    // Variable para indicar qué tipo de cálculo realizar: "distancia" o "tiempo"
+    private String modoCalculo = "distancia";
 
+    private final Label lblResultado = new Label();
 
     @FXML
     public void initialize() {
@@ -81,7 +83,9 @@ public class GestionRutasController {
 
     private void prepararBotones() {
 
+        // Configuración para cálculo por distancia.
         btnDistancia.setOnAction(e -> {
+            modoCalculo = "distancia";
             esperando   = true;
             origenSel   = null;
             destinoSel  = null;
@@ -89,11 +93,24 @@ public class GestionRutasController {
             graph.vertices().forEach(v -> {
                 SmartGraphVertexNode n =
                         (SmartGraphVertexNode) graphView.getStylableVertex(v);
-                n.setStyle("");                 // quita color previo
+                n.setStyle(""); // Quita cualquier estilo previo
             });
         });
 
-        btnTiempo.setOnAction     (e -> System.out.println("Pendiente: tiempo"));
+        // Configuración para cálculo por tiempo.
+        btnTiempo.setOnAction(e -> {
+            modoCalculo = "tiempo";
+            esperando   = true;
+            origenSel   = null;
+            destinoSel  = null;
+            lblResultado.setText("Seleccione la parada de ORIGEN.");
+            graph.vertices().forEach(v -> {
+                SmartGraphVertexNode n =
+                        (SmartGraphVertexNode) graphView.getStylableVertex(v);
+                n.setStyle(""); // Quita cualquier estilo previo
+            });
+        });
+
         btnPrecio.setOnAction     (e -> System.out.println("Pendiente: precio"));
         btnTransbordos.setOnAction(e -> System.out.println("Pendiente: transbordos"));
     }
@@ -103,44 +120,79 @@ public class GestionRutasController {
 
         if (origenSel == null) {
             origenSel = v.element();
-            node.setStyle("-fx-fill: #f1c40f;");          // amarillo
-            lblResultado.setText("Origen: "+origenSel.getNombre()+
+            node.setStyle("-fx-fill: #f1c40f;"); // amarillo
+            lblResultado.setText("Origen: " + origenSel.getNombre() +
                     "\nSeleccione la parada de DESTINO.");
             return;
         }
 
         if (destinoSel == null && !v.element().equals(origenSel)) {
             destinoSel  = v.element();
-            node.setStyle("-fx-fill: #e67e22;");          // naranja
+            node.setStyle("-fx-fill: #e67e22;"); // naranja
             esperando = false;
-            calcularRuta();
+            // Llama al método de cálculo según el modo seleccionado.
+            if (modoCalculo.equals("distancia")) {
+                calcularRuta();
+            } else if (modoCalculo.equals("tiempo")) {
+                calcularRutaPorTiempo();
+            }
         }
     }
 
     private void calcularRuta() {
-        Map<Parada,List<Ruta>> ady = Controlador.getInstance().getListaAdyacencia();
+        Map<Parada, List<Ruta>> ady = Controlador.getInstance().getListaAdyacencia();
         List<Parada> camino = AlgoritmosGrafo.dijkstra(ady, origenSel, destinoSel);
 
         if (camino.isEmpty()) {
-            lblResultado.setText("No existe ruta entre "+
-                    origenSel.getNombre()+" y "+destinoSel.getNombre()+".");
+            lblResultado.setText("No existe ruta entre " +
+                    origenSel.getNombre() + " y " + destinoSel.getNombre() + ".");
             return;
         }
 
         int total = 0;
         StringBuilder sb = new StringBuilder();
-        for (int i=0;i<camino.size();i++){
+        for (int i = 0; i < camino.size(); i++) {
             sb.append(camino.get(i).getNombre());
-            if (i<camino.size()-1){
+            if (i < camino.size() - 1) {
                 sb.append(" -> ");
-                for (Ruta r: ady.get(camino.get(i)))
-                    if (r.getDestino().equals(camino.get(i+1))){
+                for (Ruta r : ady.get(camino.get(i))) {
+                    if (r.getDestino().equals(camino.get(i + 1))) {
                         total += r.getDistancia();
                         break;
                     }
+                }
             }
         }
         sb.append("\nDistancia total: ").append(total).append(" km");
+        lblResultado.setText(sb.toString());
+    }
+
+    private void calcularRutaPorTiempo() {
+        Map<Parada, List<Ruta>> ady = Controlador.getInstance().getListaAdyacencia();
+        // Se reutiliza el mismo algoritmo de Dijkstra para obtener el camino.
+        List<Parada> camino = AlgoritmosGrafo.dijkstra(ady, origenSel, destinoSel);
+
+        if (camino.isEmpty()) {
+            lblResultado.setText("No existe ruta entre " +
+                    origenSel.getNombre() + " y " + destinoSel.getNombre() + ".");
+            return;
+        }
+
+        int totalTiempo = 0;
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < camino.size(); i++) {
+            sb.append(camino.get(i).getNombre());
+            if (i < camino.size() - 1) {
+                sb.append(" -> ");
+                for (Ruta r : ady.get(camino.get(i))) {
+                    if (r.getDestino().equals(camino.get(i + 1))) {
+                        totalTiempo += r.getTiempo();  // Se suma el tiempo de cada tramo
+                        break;
+                    }
+                }
+            }
+        }
+        sb.append("\nTiempo total: ").append(totalTiempo).append(" minutos");
         lblResultado.setText(sb.toString());
     }
 }
