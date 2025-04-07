@@ -1,62 +1,52 @@
-#titulo { -fx-font-family: "Montserrat";
-    -fx-font-style: "Segoe UI";
+/* ============= Colores y tipografías base ============= */
+#titulo {
+    -fx-font-family: "Montserrat";
     -fx-font-size: 12px;
     -fx-text-fill: #FFFFFF;
 }
 
 #fondo { -fx-background-color: #000000; }
 
-Pane{
+Pane {
     -fx-border-color: #000000;
     -fx-background-color: #008287;
 }
 
-AnchorPane{
-    -fx-border-color: #000000;
-}
+AnchorPane { -fx-border-color: #000000; }
 
 Label {
     -fx-border-color: #008287;
     -fx-border-width: 2;
     -fx-text-fill: #008287;
-    -fx-font-family: "Montserrat";
-    -fx-font-style: "Segoe UI";
+    -fx-font-family: "Segoe UI";
     -fx-font-size: 12px;
-    -fx-background-radius: 10 10 10 10;
-    -fx-border-radius: 10 10 10 10;
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
 }
 
-Button { -fx-background-color: #008287;
+Button {
+    -fx-background-color: #008287;
     -fx-border-color: #FFFFFF;
     -fx-border-width: 2;
     -fx-text-fill: #FFFFFF;
     -fx-font-family: "Montserrat";
-    -fx-font-style: "Segoe UI";
     -fx-font-size: 12px;
-    -fx-background-radius: 10 10 10 10;
-    -fx-border-radius: 10 10 10 10;
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
 }
 
-#autor { -fx-font-family: "Montserrat";
+#autor {
+    -fx-font-family: "Montserrat";
     -fx-text-fill: #FFFF00;
     -fx-font-size: 12px;
 }
 
-Button:hover { -fx-background-color: #333333;
-    -fx-font-size: 12px;
-}
+Button:hover   { -fx-background-color: #333333; }
+Button:pressed { -fx-background-color: #FFFFFF; -fx-text-fill: #000000; }
 
-Button:pressed { -fx-background-color: #FFFFFF;
-    -fx-text-fill: #000000;
-    -fx-font-weight: bold;
-}
-.smart-graph-vertex {
-    -fx-fill: #3498db;
-    -fx-stroke: black;
-}
+.smart-graph-vertex { -fx-fill: #3498db; -fx-stroke: black; }
+.smart-graph-edge   { -fx-stroke: #2ecc71; -fx-stroke-width: 2px; }
 
-.smart-graph-edge {
-    -fx-stroke: #2ecc71;
-    -fx-stroke-width: 2px;
-}
-
+/* opcional: colores para origen y destino si los usas */
+.smart-graph-vertex.origen  { -fx-fill: #f1c40f; }
+.smart-graph-vertex.destino { -fx-fill: #e67e22; }
