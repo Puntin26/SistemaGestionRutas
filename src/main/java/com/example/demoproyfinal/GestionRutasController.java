@@ -59,6 +59,8 @@ public class GestionRutasController {
         AnchorPane.setLeftAnchor(graphView, 0.0);
         AnchorPane.setRightAnchor(graphView, 0.0);
 
+        //
+
         graphContainer.getChildren().add(graphView);
 
         Platform.runLater(() -> {
