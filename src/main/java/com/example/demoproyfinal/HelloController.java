@@ -7,6 +7,7 @@ import com.brunomnsilva.smartgraph.graphview.SmartGraphPanel;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 
@@ -30,39 +31,72 @@ public class HelloController {
     @FXML
     public void initialize() {
 
+        // Obtener datos desde la base de datos y actualizar el Controlador
         ParadaDAO paradaDAO = new ParadaDAO();
-        RutaDAO   rutaDAO   = new RutaDAO();
+        RutaDAO rutaDAO = new RutaDAO();
         List<Parada> paradasBD = paradaDAO.obtenerParadas();
-        List<Ruta>   rutasBD   = rutaDAO.obtenerrutas();
+        List<Ruta> rutasBD = rutaDAO.obtenerrutas();
 
         Controlador.getInstance().setParadas(new ArrayList<>(paradasBD));
         Controlador.getInstance().setRutas(new ArrayList<>(rutasBD));
-
         Controlador.getInstance().reconstruirListaAdyacencia();
 
-
+        // Crear grafo e insertar vértices y aristas
         graph = new GraphEdgeList<>();
-
         Controlador.getInstance().getParadas().forEach(graph::insertVertex);
         Controlador.getInstance().getRutas().forEach(r -> graph.insertEdge(r.getOrigen(), r.getDestino(), r));
 
+        // Crear el panel del grafo y vincular sus dimensiones al contenedor
         graphView = new SmartGraphPanel<>(graph, new SmartCircularSortedPlacementStrategy());
-        graphView.setMinSize(400,200);
+        graphView.setMinSize(400, 200);
         graphView.prefWidthProperty().bind(graphContainer.widthProperty());
         graphView.prefHeightProperty().bind(graphContainer.heightProperty());
 
+        // Agregar el graphView al contenedor y establecer sus anclajes
+        graphContainer.getChildren().clear();
         graphContainer.getChildren().add(graphView);
-        AnchorPane.setTopAnchor  (graphView,0.0);
-        AnchorPane.setRightAnchor (graphView,0.0);
-        AnchorPane.setBottomAnchor(graphView,0.0);
-        AnchorPane.setLeftAnchor (graphView,0.0);
+        AnchorPane.setTopAnchor(graphView, 0.0);
+        AnchorPane.setRightAnchor(graphView, 0.0);
+        AnchorPane.setBottomAnchor(graphView, 0.0);
+        AnchorPane.setLeftAnchor(graphView, 0.0);
 
+        // Paso 3 y 4: Hacer que el graphView capture eventos en toda su área y tenga el foco
+        graphView.setPickOnBounds(true);
+        graphView.setFocusTraversable(true);
+        graphView.requestFocus();
+
+        // Agregar funcionalidad de zoom mediante scroll
+        graphView.setOnScroll(event -> {
+            System.out.println("onScroll event detected! DeltaY = " + event.getDeltaY());
+            double oldScaleX = graphView.getScaleX();
+            double oldScaleY = graphView.getScaleY();
+            double zoomFactor = 2.0; // Factor de zoom, puedes ajustar este valor
+            if (event.getDeltaY() < 0) {
+                zoomFactor = 1 / zoomFactor;
+            }
+            double newScaleX = oldScaleX * zoomFactor;
+            double newScaleY = oldScaleY * zoomFactor;
+            graphView.setScaleX(newScaleX);
+            graphView.setScaleY(newScaleY);
+            System.out.println("ScaleX: " + oldScaleX + " -> " + newScaleX +
+                    ", ScaleY: " + oldScaleY + " -> " + newScaleY);
+            event.consume();
+        });
+
+        // (Opcional) Agregar un estilo de borde para visualizar el área del graphView
+        graphView.setStyle("-fx-border-color: red; -fx-border-width: 3;");
+
+        // Inicializar el graphView en el Thread de JavaFX
         Platform.runLater(() -> {
             graphView.init();
+            // Activa la distribución inicial
             graphView.setAutomaticLayout(true);
             graphViewInitialized = true;
-            System.out.println("Grafo inicializado correctamente");
+
+            // OPCIONAL: Desactiva la autocolocación después de un pequeño retraso
+            // para evitar reajustes mientras se hace zoom
         });
+
     }
 
 
@@ -71,6 +105,20 @@ public class HelloController {
         String nombre = txtParada.getText().trim();
         if (nombre.isEmpty()) return;
 
+        // Verificar si la parada ya existe (comparación sin tener en cuenta mayúsculas/minúsculas)
+        boolean existe = Controlador.getInstance().getParadas().stream()
+                .anyMatch(p -> p.getNombre().equalsIgnoreCase(nombre));
+        if (existe) {
+            // Mostrar un panel de información si la parada ya existe
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Información");
+            alert.setHeaderText(null);
+            alert.setContentText("La parada \"" + nombre + "\" ya existe en el sistema.");
+            alert.showAndWait();
+            return;
+        }
+
+        // Si la parada no existe, se procede a agregarla
         Parada nueva = new Parada(nombre);
         Controlador.getInstance().insertarParada(nueva);
         Controlador.getInstance().reconstruirListaAdyacencia();
@@ -88,29 +136,80 @@ public class HelloController {
         String distStr  = txtDistancia.getText().trim();
         String costoStr = txtCosto.getText().trim();
         String timeStr  = txtTiempo.getText().trim();
-        if (origen.isEmpty()||destino.isEmpty()||distStr.isEmpty()|| costoStr.isEmpty()||timeStr.isEmpty()) return;
+        if (origen.isEmpty() || destino.isEmpty() || distStr.isEmpty() || costoStr.isEmpty() || timeStr.isEmpty())
+            return;
 
         try {
-            int   dist = Integer.parseInt(distStr);
+            int dist = Integer.parseInt(distStr);
             float cost = Float.parseFloat(costoStr);
-            int   tim  = Integer.parseInt(timeStr);
-            if (dist<=0||cost<=0||tim<=0) return;
+            int tim = Integer.parseInt(timeStr);
+            if (dist <= 0 || cost <= 0 || tim <= 0)
+                return;
 
-            Parada pOrigen = Controlador.getInstance().getParadas().stream().filter(p -> p.getNombre().equalsIgnoreCase(origen)).findFirst().orElse(null);
-            Parada pDestino = Controlador.getInstance().getParadas().stream().filter(p -> p.getNombre().equalsIgnoreCase(destino)).findFirst().orElse(null);
-            if (pOrigen==null||pDestino==null||pOrigen.equals(pDestino)) return;
+            // Buscar las paradas en la lista del Controlador
+            Parada pOrigen = Controlador.getInstance().getParadas().stream()
+                    .filter(p -> p.getNombre().equalsIgnoreCase(origen))
+                    .findFirst().orElse(null);
+            Parada pDestino = Controlador.getInstance().getParadas().stream()
+                    .filter(p -> p.getNombre().equalsIgnoreCase(destino))
+                    .findFirst().orElse(null);
 
-            Ruta nuevaRuta = new Ruta(pOrigen,pDestino,dist,cost,tim);
+            // Validar existencia de paradas
+            if (pOrigen == null || pDestino == null) {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Información");
+                alert.setHeaderText(null);
+                if (pOrigen == null && pDestino == null) {
+                    alert.setContentText("Las paradas de ORIGEN y DESTINO no existen en el sistema.");
+                } else if (pOrigen == null) {
+                    alert.setContentText("La parada de ORIGEN (" + origen + ") no existe en el sistema.");
+                } else {
+                    alert.setContentText("La parada de DESTINO (" + destino + ") no existe en el sistema.");
+                }
+                alert.showAndWait();
+                return;
+            }
+
+            // Validar que no sean iguales
+            if (pOrigen.equals(pDestino)) {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Información");
+                alert.setHeaderText(null);
+                alert.setContentText("El origen y destino deben ser diferentes.");
+                alert.showAndWait();
+                return;
+            }
+
+            // Validar si ya existe una ruta entre pOrigen y pDestino
+            boolean existeRuta = Controlador.getInstance().getRutas().stream()
+                    .anyMatch(r -> r.getOrigen().getNombre().equalsIgnoreCase(origen) &&
+                            r.getDestino().getNombre().equalsIgnoreCase(destino));
+            if (existeRuta) {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Información");
+                alert.setHeaderText(null);
+                alert.setContentText("La ruta de " + origen + " a " + destino + " ya existe en el sistema.");
+                alert.showAndWait();
+                return;
+            }
+
+            // Crear la ruta y agregarla
+            Ruta nuevaRuta = new Ruta(pOrigen, pDestino, dist, cost, tim);
             Controlador.getInstance().insertarRuta(nuevaRuta);
             Controlador.getInstance().reconstruirListaAdyacencia();
             new RutaDAO().insertarRuta(nuevaRuta);
-
-            graph.insertEdge(pOrigen,pDestino,nuevaRuta);
+            graph.insertEdge(pOrigen, pDestino, nuevaRuta);
             if (graphViewInitialized) Platform.runLater(graphView::update);
 
-            txtOrigen.clear(); txtDestino.clear(); txtDistancia.clear();
-            txtCosto.clear(); txtTiempo.clear();
+            // Limpiar campos
+            txtOrigen.clear();
+            txtDestino.clear();
+            txtDistancia.clear();
+            txtCosto.clear();
+            txtTiempo.clear();
 
         } catch (NumberFormatException ignored) {}
     }
+
+
 }

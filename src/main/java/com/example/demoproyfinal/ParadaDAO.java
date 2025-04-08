@@ -8,7 +8,8 @@ import java.util.List;
 
 public class ParadaDAO {
 
-    private static final String URL = "jdbc:mariadb://localhost:3306/mi_base_datos";
+    private static final String URL = "jdbc:mariadb://localhost:3308/mi_base_datos";
+    //private static final String URL = "jdbc:mariadb://localhost:3307/db_empty";
     private static final String USER = "root";
     private static final String PASSWORD = "example";
 

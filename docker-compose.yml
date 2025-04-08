@@ -7,32 +7,49 @@ services:
       dockerfile: Dockerfile
     container_name: mi-aplicacion
     environment:
-      DB_HOST: db
-      DB_USER: root
-      DB_PASSWORD: example
+      DB_EMPTY_URL: "jdbc:mariadb://db_empty:3306/db_empty"
+      DB_FULL_URL: "jdbc:mariadb://localhost:3306/mi_base_datos"
+      DB_USER: "root"
+      DB_PASSWORD: "example"
+      DB_SELECCIONADA: "full"   # O "empty", según cuál quieras usar
     ports:
       - "8080:8080"
     depends_on:
-      - db
+      - db_empty
+      - db_full
 
-  db:
+  db_empty:
     image: mariadb
-    container_name: mi-mariadb
+    container_name: db_empty
+    environment:
+      MARIADB_ROOT_PASSWORD: example
+      MARIADB_DATABASE: db_empty
+    ports:
+      - "3307:3306"
+    volumes:
+      - db_empty_data:/var/lib/mysql
+
+  db_full:
+    image: mariadb
+    container_name: db_full
     environment:
       MARIADB_ROOT_PASSWORD: example
       MARIADB_DATABASE: mi_base_datos
     ports:
-      - "3306:3306"
+      - "3308:3306"
     volumes:
-      - db_data:/var/lib/mysql
-      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+      - db_full_data:/var/lib/mysql
+      - ./init_25nodos.sql:/docker-entrypoint-initdb.d/init_25nodos.sql
 
   adminer:
     image: adminer
+    container_name: adminer
     depends_on:
-      - db
+      - db_empty
+      - db_full
     ports:
       - "8081:8080"
 
 volumes:
-  db_data:
+  db_empty_data:
+  db_full_data:

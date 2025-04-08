@@ -58,6 +58,21 @@ public class GestionRutasController {
         AnchorPane.setRightAnchor (graphView,0d);
         graphContainer.getChildren().add(graphView);
 
+        panelCalculos.toFront();
+        panelExtra.toFront();
+
+        graphView.setOnScroll(event -> {
+            System.out.println("onScroll event detected! DeltaY = " + event.getDeltaY());
+            double zoomFactor = 2.0;
+            if (event.getDeltaY() < 0) {
+                zoomFactor = 1 / zoomFactor;
+            }
+            graphView.setScaleX(graphView.getScaleX() * zoomFactor);
+            graphView.setScaleY(graphView.getScaleY() * zoomFactor);
+            event.consume();
+        });
+
+
         Platform.runLater(() -> {
             graphView.init();
             graphView.setAutomaticLayout(true);
@@ -105,8 +120,29 @@ public class GestionRutasController {
             });
         });
 
-        btnPrecio.setOnAction(e -> System.out.println("Pendiente: precio"));
-        btnTransbordos.setOnAction(e -> System.out.println("Pendiente: transbordos"));
+        btnPrecio.setOnAction(e -> {
+            modoCalculo = "costo";
+            esperando   = true;
+            origenSel   = null;
+            destinoSel  = null;
+            lblResultado.setText("Seleccione la parada de ORIGEN.");
+            graph.vertices().forEach(v -> {
+                SmartGraphVertexNode n = (SmartGraphVertexNode) graphView.getStylableVertex(v);
+                n.setStyle("");
+            });
+        });
+
+        btnTransbordos.setOnAction(e -> {
+            modoCalculo = "transbordos";
+            esperando   = true;
+            origenSel   = null;
+            destinoSel  = null;
+            lblResultado.setText("Seleccione la parada de ORIGEN.");
+            graph.vertices().forEach(v -> {
+                SmartGraphVertexNode n = (SmartGraphVertexNode) graphView.getStylableVertex(v);
+                n.setStyle("");
+            });
+        });
     }
 
     private void procesarClickVertice(Vertex<Parada> v, SmartGraphVertexNode node) {
@@ -125,14 +161,18 @@ public class GestionRutasController {
             esperando = false;
 
             if (modoCalculo.equals("distancia")) {
-                calcularRuta();
+                calcularRutaDistancia();
             } else if (modoCalculo.equals("tiempo")) {
                 calcularRutaPorTiempo();
+            } else if (modoCalculo.equals("costo")) {
+                calcularRutaPorCosto();
+            } else if (modoCalculo.equals("transbordos")) {
+                calcularRutaPorTransbordos();
             }
         }
     }
 
-    private void calcularRuta() {
+    private void calcularRutaDistancia() {
         Map<Parada, List<Ruta>> ady = Controlador.getInstance().getListaAdyacencia();
         List<Parada> camino = AlgoritmosGrafo.dijkstra(ady, origenSel, destinoSel);
 
@@ -184,5 +224,56 @@ public class GestionRutasController {
         }
         sb.append("\nTiempo total: ").append(totalTiempo).append(" minutos");
         lblResultado.setText(sb.toString());
+    }
+
+    private void calcularRutaPorTransbordos() {
+        Map<Parada, List<Ruta>> ady = Controlador.getInstance().getListaAdyacencia();
+        List<Parada> camino = AlgoritmosGrafo.dijkstra(ady, origenSel, destinoSel);
+
+        if (camino.isEmpty()) {
+            lblResultado.setText("No existe ruta entre " + origenSel.getNombre() + " y " + destinoSel.getNombre() + ".");
+            return;
+        }
+
+        int totalTransbordos = Math.max(0, camino.size() - 2);
+
+        StringBuilder sb = new StringBuilder();
+        for (Parada p : camino) {
+            sb.append(p.getNombre()).append(" -> ");
+        }
+        // Eliminar la flecha final y espacio extra.
+        if (sb.length() >= 4)
+            sb.delete(sb.length() - 4, sb.length());
+        sb.append("\nTransbordos totales: ").append(totalTransbordos);
+        lblResultado.setText(sb.toString());
+    }
+
+
+    private void calcularRutaPorCosto() {
+        Map<Parada, List<Ruta>> ady = Controlador.getInstance().getListaAdyacencia();
+        List<Parada> camino = AlgoritmosGrafo.dijkstra(ady, origenSel, destinoSel);
+
+        if (camino.isEmpty()) {
+            lblResultado.setText("No existe ruta entre " + origenSel.getNombre() + " y " + destinoSel.getNombre() + ".");
+            return;
+        }
+
+        float totalCosto = 0;
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < camino.size(); i++) {
+            sb.append(camino.get(i).getNombre());
+            if (i < camino.size() - 1) {
+                sb.append("->");
+                for (Ruta r : ady.get(camino.get(i))) {
+                    if (r.getDestino().equals(camino.get(i + 1))) {
+                        totalCosto += r.getCosto();
+                        break;
+                    }
+                }
+            }
+        }
+        sb.append("\nCosto total: ").append(totalCosto).append(" $");
+        lblResultado.setText(sb.toString());
+
     }
 }
