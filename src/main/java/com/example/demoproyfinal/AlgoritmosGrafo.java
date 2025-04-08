@@ -8,6 +8,57 @@ import java.util.*;
 public class AlgoritmosGrafo {
 
 
+    public static List<Parada> dijkstraTiempo(Map<Parada, List<Ruta>> listaAdy, Parada origen, Parada destino) {
+
+        Map<Parada, Integer> tiempo = new HashMap<>();
+        Map<Parada, Parada> previo = new HashMap<>();
+
+        for (Parada p : listaAdy.keySet()) {
+            tiempo.put(p, Integer.MAX_VALUE);
+            previo.put(p, null);
+        }
+        tiempo.put(origen, 0);
+
+        PriorityQueue<Parada> cola = new PriorityQueue<>(Comparator.comparingInt(tiempo::get));
+        cola.add(origen);
+
+        while (!cola.isEmpty()) {
+            Parada u = cola.poll();
+
+            if (u.equals(destino)) break;
+
+            List<Ruta> rutas = listaAdy.get(u);
+            if (rutas == null) continue;
+
+            for (Ruta r : rutas) {
+                Parada a = r.getDestino();
+                int w = r.getTiempo();
+
+                if (!tiempo.containsKey(a)) tiempo.put(a, Integer.MAX_VALUE);
+
+                int nueva = tiempo.get(u) + w;
+                if (nueva < tiempo.get(a)) {
+                    tiempo.put(a, nueva);
+                    previo.put(a, u);
+                    cola.remove(a);
+                    cola.add(a);
+                }
+            }
+        }
+        List<Parada> camino = new ArrayList<>();
+        Parada actual = destino;
+        while (actual != null) {
+            camino.add(actual);
+            actual = previo.get(actual);
+        }
+        Collections.reverse(camino);
+
+        if (tiempo.get(destino) == Integer.MAX_VALUE) return Collections.emptyList();
+        return camino;
+    }
+
+
+
     public static List<Parada> dijkstra(Map<Parada,List<Ruta>> listaAdy, Parada origen, Parada destino) {
 
         Map<Parada,Integer> distancia = new HashMap<>();

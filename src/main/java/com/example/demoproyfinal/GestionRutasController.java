@@ -161,7 +161,7 @@ public class GestionRutasController {
 
     private void calcularRutaPorTiempo() {
         Map<Parada, List<Ruta>> ady = Controlador.getInstance().getListaAdyacencia();
-        List<Parada> camino = AlgoritmosGrafo.dijkstra(ady, origenSel, destinoSel);
+        List<Parada> camino = AlgoritmosGrafo.dijkstraTiempo(ady, origenSel, destinoSel);
 
         if (camino.isEmpty()) {
             lblResultado.setText("No existe ruta entre " + origenSel.getNombre() + " y " + destinoSel.getNombre() + ".");
