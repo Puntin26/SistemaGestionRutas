@@ -2,7 +2,6 @@ package com.example.demoproyfinal;
 
 import java.util.*;
 
-
 public class Controlador {
 
     private ArrayList<Parada> paradas;
@@ -22,26 +21,54 @@ public class Controlador {
         return controlador;
     }
 
+
     public void reconstruirListaAdyacencia() {
+
         listaAdyacencia = new HashMap<>();
 
-        /* 1. crear entrada vacía para TODAS las paradas  */
         for (Parada p : paradas) {
             listaAdyacencia.put(p, new ArrayList<>());
         }
-        /* 2. colocar cada ruta en la lista del origen    */
+
         for (Ruta r : rutas) {
+
             listaAdyacencia.get(r.getOrigen()).add(r);
+
+            boolean existeInversa = listaAdyacencia
+                    .get(r.getDestino())
+                    .stream()
+                    .anyMatch(x -> x.getDestino().equals(r.getOrigen()));
+
+            if (!existeInversa) {
+                Ruta inversa = new Ruta(
+                        r.getDestino(),
+                        r.getOrigen(),
+                        r.getDistancia(),
+                        r.getCosto(),
+                        r.getTiempo());
+                listaAdyacencia.get(inversa.getOrigen()).add(inversa);
+            }
         }
     }
 
-    public ArrayList<Parada> getParadas()                       { return paradas; }
-    public void setParadas(ArrayList<Parada> paradas)           { this.paradas = paradas; }
 
-    public ArrayList<Ruta>  getRutas()                          { return rutas; }
-    public void setRutas(ArrayList<Ruta> rutas)                 { this.rutas = rutas; }
+    public ArrayList<Parada> getParadas(){
+        return paradas;
+    }
+    public void setParadas(ArrayList<Parada> paradas)
+    { this.paradas = paradas; }
 
-    public Map<Parada, List<Ruta>> getListaAdyacencia()         { return listaAdyacencia; }
+    public ArrayList<Ruta>  getRutas()
+    { return rutas;
+    }
+    public void setRutas(ArrayList<Ruta> rutas){
+        this.rutas = rutas;
+    }
+
+    public Map<Parada, List<Ruta>> getListaAdyacencia() {
+        return listaAdyacencia;
+    }
+
 
     public void insertarParada(Parada parada) {
         if (parada == null || parada.getNombre() == null || parada.getNombre().trim().isEmpty()) {
@@ -91,6 +118,7 @@ public class Controlador {
         parada.setNombre(nuevoNombre);
     }
 
+
     public void insertarRuta(Ruta ruta) {
         if (ruta == null || ruta.getOrigen() == null || ruta.getDestino() == null) {
             System.out.println("Error: La ruta no puede ser nula y debe tener origen y destino válidos.");
@@ -104,9 +132,27 @@ public class Controlador {
             System.out.println("Error: La distancia y el costo deben ser valores positivos.");
             return;
         }
+
         rutas.add(ruta);
         listaAdyacencia.get(ruta.getOrigen()).add(ruta);
-        System.out.println("Ruta agregada correctamente.");
+
+        boolean existeInversa = listaAdyacencia
+                .get(ruta.getDestino())
+                .stream()
+                .anyMatch(x -> x.getDestino().equals(ruta.getOrigen()));
+
+        if (!existeInversa) {
+            Ruta inversa = new Ruta(
+                    ruta.getDestino(),
+                    ruta.getOrigen(),
+                    ruta.getDistancia(),
+                    ruta.getCosto(),
+                    ruta.getTiempo());
+            rutas.add(inversa);
+            listaAdyacencia.get(inversa.getOrigen()).add(inversa);
+        }
+
+        System.out.println("Ruta agregada correctamente (bidireccional).");
     }
 
     public void eliminarRuta(Ruta ruta) {
