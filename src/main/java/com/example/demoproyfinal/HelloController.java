@@ -40,7 +40,9 @@ public class HelloController {
 
         Controlador.getInstance().reconstruirListaAdyacencia();
 
+
         graph = new GraphEdgeList<>();
+
         Controlador.getInstance().getParadas().forEach(graph::insertVertex);
         Controlador.getInstance().getRutas()
                 .forEach(r -> graph.insertEdge(r.getOrigen(), r.getDestino(), r));
@@ -63,6 +65,7 @@ public class HelloController {
             System.out.println("Grafo inicializado correctamente");
         });
     }
+
 
     @FXML
     void agregarParada(ActionEvent event) {

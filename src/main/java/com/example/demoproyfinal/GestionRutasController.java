@@ -32,9 +32,7 @@ public class GestionRutasController {
     private Parada  destinoSel = null;
     private boolean esperando  = false;
 
-    // Variable para indicar qué tipo de cálculo realizar: "distancia" o "tiempo"
     private String modoCalculo = "distancia";
-
     private final Label lblResultado = new Label();
 
     @FXML
@@ -46,6 +44,7 @@ public class GestionRutasController {
 
     private void crearGrafo() {
         graph = new GraphEdgeList<>();
+
         Controlador c = Controlador.getInstance();
 
         c.getParadas().forEach(p -> graph.insertVertex(p));
@@ -83,7 +82,6 @@ public class GestionRutasController {
 
     private void prepararBotones() {
 
-        // Configuración para cálculo por distancia.
         btnDistancia.setOnAction(e -> {
             modoCalculo = "distancia";
             esperando   = true;
@@ -93,11 +91,10 @@ public class GestionRutasController {
             graph.vertices().forEach(v -> {
                 SmartGraphVertexNode n =
                         (SmartGraphVertexNode) graphView.getStylableVertex(v);
-                n.setStyle(""); // Quita cualquier estilo previo
+                n.setStyle("");
             });
         });
 
-        // Configuración para cálculo por tiempo.
         btnTiempo.setOnAction(e -> {
             modoCalculo = "tiempo";
             esperando   = true;
@@ -107,7 +104,7 @@ public class GestionRutasController {
             graph.vertices().forEach(v -> {
                 SmartGraphVertexNode n =
                         (SmartGraphVertexNode) graphView.getStylableVertex(v);
-                n.setStyle(""); // Quita cualquier estilo previo
+                n.setStyle("");
             });
         });
 
@@ -120,7 +117,7 @@ public class GestionRutasController {
 
         if (origenSel == null) {
             origenSel = v.element();
-            node.setStyle("-fx-fill: #f1c40f;"); // amarillo
+            node.setStyle("-fx-fill: #f1c40f;");
             lblResultado.setText("Origen: " + origenSel.getNombre() +
                     "\nSeleccione la parada de DESTINO.");
             return;
@@ -128,9 +125,9 @@ public class GestionRutasController {
 
         if (destinoSel == null && !v.element().equals(origenSel)) {
             destinoSel  = v.element();
-            node.setStyle("-fx-fill: #e67e22;"); // naranja
+            node.setStyle("-fx-fill: #e67e22;");
             esperando = false;
-            // Llama al método de cálculo según el modo seleccionado.
+
             if (modoCalculo.equals("distancia")) {
                 calcularRuta();
             } else if (modoCalculo.equals("tiempo")) {
@@ -169,7 +166,6 @@ public class GestionRutasController {
 
     private void calcularRutaPorTiempo() {
         Map<Parada, List<Ruta>> ady = Controlador.getInstance().getListaAdyacencia();
-        // Se reutiliza el mismo algoritmo de Dijkstra para obtener el camino.
         List<Parada> camino = AlgoritmosGrafo.dijkstra(ady, origenSel, destinoSel);
 
         if (camino.isEmpty()) {
@@ -186,7 +182,7 @@ public class GestionRutasController {
                 sb.append(" -> ");
                 for (Ruta r : ady.get(camino.get(i))) {
                     if (r.getDestino().equals(camino.get(i + 1))) {
-                        totalTiempo += r.getTiempo();  // Se suma el tiempo de cada tramo
+                        totalTiempo += r.getTiempo();
                         break;
                     }
                 }

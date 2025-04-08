@@ -7,9 +7,7 @@ import java.util.*;
  */
 public class AlgoritmosGrafo {
 
-    /* -------------------------------------------------- */
-    /*  DIJKSTRA  (distancia mínima entre dos paradas)    */
-    /* -------------------------------------------------- */
+
     public static List<Parada> dijkstra(Map<Parada,List<Ruta>> listaAdy, Parada origen, Parada destino) {
 
         Map<Parada,Integer> distancia = new HashMap<>();
