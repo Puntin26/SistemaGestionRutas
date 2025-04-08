@@ -36,7 +36,7 @@ public class HelloController {
         List<Ruta>   rutasBD   = rutaDAO.obtenerrutas();
 
         Controlador.getInstance().setParadas(new ArrayList<>(paradasBD));
-        Controlador.getInstance().setRutas  (new ArrayList<>(rutasBD));
+        Controlador.getInstance().setRutas(new ArrayList<>(rutasBD));
 
         Controlador.getInstance().reconstruirListaAdyacencia();
 
@@ -44,8 +44,7 @@ public class HelloController {
         graph = new GraphEdgeList<>();
 
         Controlador.getInstance().getParadas().forEach(graph::insertVertex);
-        Controlador.getInstance().getRutas()
-                .forEach(r -> graph.insertEdge(r.getOrigen(), r.getDestino(), r));
+        Controlador.getInstance().getRutas().forEach(r -> graph.insertEdge(r.getOrigen(), r.getDestino(), r));
 
         graphView = new SmartGraphPanel<>(graph, new SmartCircularSortedPlacementStrategy());
         graphView.setMinSize(400,200);
@@ -53,10 +52,10 @@ public class HelloController {
         graphView.prefHeightProperty().bind(graphContainer.heightProperty());
 
         graphContainer.getChildren().add(graphView);
-        AnchorPane.setTopAnchor   (graphView,0.0);
+        AnchorPane.setTopAnchor  (graphView,0.0);
         AnchorPane.setRightAnchor (graphView,0.0);
         AnchorPane.setBottomAnchor(graphView,0.0);
-        AnchorPane.setLeftAnchor  (graphView,0.0);
+        AnchorPane.setLeftAnchor (graphView,0.0);
 
         Platform.runLater(() -> {
             graphView.init();
@@ -89,8 +88,7 @@ public class HelloController {
         String distStr  = txtDistancia.getText().trim();
         String costoStr = txtCosto.getText().trim();
         String timeStr  = txtTiempo.getText().trim();
-        if (origen.isEmpty()||destino.isEmpty()||distStr.isEmpty()||
-                costoStr.isEmpty()||timeStr.isEmpty()) return;
+        if (origen.isEmpty()||destino.isEmpty()||distStr.isEmpty()|| costoStr.isEmpty()||timeStr.isEmpty()) return;
 
         try {
             int   dist = Integer.parseInt(distStr);
@@ -98,12 +96,8 @@ public class HelloController {
             int   tim  = Integer.parseInt(timeStr);
             if (dist<=0||cost<=0||tim<=0) return;
 
-            Parada pOrigen = Controlador.getInstance().getParadas().stream()
-                    .filter(p -> p.getNombre().equalsIgnoreCase(origen))
-                    .findFirst().orElse(null);
-            Parada pDestino = Controlador.getInstance().getParadas().stream()
-                    .filter(p -> p.getNombre().equalsIgnoreCase(destino))
-                    .findFirst().orElse(null);
+            Parada pOrigen = Controlador.getInstance().getParadas().stream().filter(p -> p.getNombre().equalsIgnoreCase(origen)).findFirst().orElse(null);
+            Parada pDestino = Controlador.getInstance().getParadas().stream().filter(p -> p.getNombre().equalsIgnoreCase(destino)).findFirst().orElse(null);
             if (pOrigen==null||pDestino==null||pOrigen.equals(pDestino)) return;
 
             Ruta nuevaRuta = new Ruta(pOrigen,pDestino,dist,cost,tim);

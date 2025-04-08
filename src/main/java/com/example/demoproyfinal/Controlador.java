@@ -11,8 +11,8 @@ public class Controlador {
     private static Controlador controlador = null;
 
     private Controlador() {
-        paradas         = new ArrayList<>();
-        rutas           = new ArrayList<>();
+        paradas = new ArrayList<>();
+        rutas = new ArrayList<>();
         listaAdyacencia = new HashMap<>();
     }
 
@@ -34,18 +34,10 @@ public class Controlador {
 
             listaAdyacencia.get(r.getOrigen()).add(r);
 
-            boolean existeInversa = listaAdyacencia
-                    .get(r.getDestino())
-                    .stream()
-                    .anyMatch(x -> x.getDestino().equals(r.getOrigen()));
+            boolean existeInversa = listaAdyacencia.get(r.getDestino()).stream().anyMatch(x -> x.getDestino().equals(r.getOrigen()));
 
             if (!existeInversa) {
-                Ruta inversa = new Ruta(
-                        r.getDestino(),
-                        r.getOrigen(),
-                        r.getDistancia(),
-                        r.getCosto(),
-                        r.getTiempo());
+                Ruta inversa = new Ruta(r.getDestino(), r.getOrigen(), r.getDistancia(), r.getCosto(), r.getTiempo());
                 listaAdyacencia.get(inversa.getOrigen()).add(inversa);
             }
         }
@@ -97,8 +89,7 @@ public class Controlador {
     public void eliminarParadaCompletamente(Parada parada) {
         paradas.remove(parada);
         listaAdyacencia.remove(parada);
-        listaAdyacencia.values().forEach(l -> l.removeIf(r ->
-                r.getOrigen().equals(parada) || r.getDestino().equals(parada)));
+        listaAdyacencia.values().forEach(l -> l.removeIf(r -> r.getOrigen().equals(parada) || r.getDestino().equals(parada)));
         rutas.removeIf(r -> r.getOrigen().equals(parada) || r.getDestino().equals(parada));
     }
 
@@ -136,18 +127,10 @@ public class Controlador {
         rutas.add(ruta);
         listaAdyacencia.get(ruta.getOrigen()).add(ruta);
 
-        boolean existeInversa = listaAdyacencia
-                .get(ruta.getDestino())
-                .stream()
-                .anyMatch(x -> x.getDestino().equals(ruta.getOrigen()));
+        boolean existeInversa = listaAdyacencia.get(ruta.getDestino()).stream().anyMatch(x -> x.getDestino().equals(ruta.getOrigen()));
 
         if (!existeInversa) {
-            Ruta inversa = new Ruta(
-                    ruta.getDestino(),
-                    ruta.getOrigen(),
-                    ruta.getDistancia(),
-                    ruta.getCosto(),
-                    ruta.getTiempo());
+            Ruta inversa = new Ruta(ruta.getDestino(), ruta.getOrigen(), ruta.getDistancia(), ruta.getCosto(), ruta.getTiempo());
             rutas.add(inversa);
             listaAdyacencia.get(inversa.getOrigen()).add(inversa);
         }
