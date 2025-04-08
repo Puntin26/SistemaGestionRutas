@@ -3,7 +3,7 @@ package com.example.demoproyfinal;
 import java.util.*;
 
 /**
- * En esta clase se encapsulan los algoritmos clásicos del proyecto.
+ * En esta clase se encapsulan los algoritmos clasicos del proyecto.
  */
 public class AlgoritmosGrafo {
 
@@ -20,8 +20,7 @@ public class AlgoritmosGrafo {
         }
         distancia.put(origen, 0);
 
-        PriorityQueue<Parada> cola =
-                new PriorityQueue<>(Comparator.comparingInt(distancia::get));
+        PriorityQueue<Parada> cola = new PriorityQueue<>(Comparator.comparingInt(distancia::get));
         cola.add(origen);
 
         while (!cola.isEmpty()) {
@@ -33,9 +32,8 @@ public class AlgoritmosGrafo {
 
             for (Ruta r : rutas) {
                 Parada a = r.getDestino();
-                int    w = r.getDistancia();
+                int w = r.getDistancia();
 
-                /* línea de salvaguarda */
                 if (!distancia.containsKey(a)) distancia.put(a, Integer.MAX_VALUE);
 
                 int nueva = distancia.get(u) + w;

@@ -40,15 +40,12 @@ public class ModParadaController {
         if (paradaSeleccionada != null) {
             String nuevoNombre = txtNuevoNombre.getText().trim();
             if (!nuevoNombre.isEmpty()) {
-                // Capturamos el nombre antiguo
                 String oldName = paradaSeleccionada.getNombre();
 
-                // Modificar en memoria (y en la tabla de paradas a través del DAO)
                 Controlador.getInstance().modificarParada(paradaSeleccionada, nuevoNombre);
                 ParadaDAO dao = new ParadaDAO();
                 dao.actualizarParada(oldName, nuevoNombre);
 
-                // Ahora actualizamos las rutas asociadas
                 RutaDAO rutaDAO = new RutaDAO();
                 rutaDAO.actualizarRutasPorParada(oldName, nuevoNombre);
 

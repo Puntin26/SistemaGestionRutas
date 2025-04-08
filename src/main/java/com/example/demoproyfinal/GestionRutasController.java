@@ -17,15 +17,15 @@ import java.util.Map;
 public class GestionRutasController {
 
     @FXML private AnchorPane graphContainer;
-    @FXML private Pane        panelCalculos;
-    @FXML private Pane        panelExtra;
+    @FXML private Pane panelCalculos;
+    @FXML private Pane panelExtra;
 
     @FXML private Button btnDistancia;
     @FXML private Button btnTiempo;
     @FXML private Button btnPrecio;
     @FXML private Button btnTransbordos;
 
-    private Graph<Parada,Ruta>           graph;
+    private Graph<Parada,Ruta> graph;
     private SmartGraphPanel<Parada,Ruta> graphView;
 
     private Parada  origenSel  = null;
@@ -63,8 +63,7 @@ public class GestionRutasController {
             graphView.setAutomaticLayout(true);
 
             for (Vertex<Parada> v : graph.vertices()) {
-                SmartGraphVertexNode node =
-                        (SmartGraphVertexNode) graphView.getStylableVertex(v);
+                SmartGraphVertexNode node = (SmartGraphVertexNode) graphView.getStylableVertex(v);
 
                 node.setOnMouseClicked(e -> procesarClickVertice(v, node));
             }
@@ -89,8 +88,7 @@ public class GestionRutasController {
             destinoSel  = null;
             lblResultado.setText("Seleccione la parada de ORIGEN.");
             graph.vertices().forEach(v -> {
-                SmartGraphVertexNode n =
-                        (SmartGraphVertexNode) graphView.getStylableVertex(v);
+                SmartGraphVertexNode n = (SmartGraphVertexNode) graphView.getStylableVertex(v);
                 n.setStyle("");
             });
         });
@@ -102,13 +100,12 @@ public class GestionRutasController {
             destinoSel  = null;
             lblResultado.setText("Seleccione la parada de ORIGEN.");
             graph.vertices().forEach(v -> {
-                SmartGraphVertexNode n =
-                        (SmartGraphVertexNode) graphView.getStylableVertex(v);
+                SmartGraphVertexNode n = (SmartGraphVertexNode) graphView.getStylableVertex(v);
                 n.setStyle("");
             });
         });
 
-        btnPrecio.setOnAction     (e -> System.out.println("Pendiente: precio"));
+        btnPrecio.setOnAction(e -> System.out.println("Pendiente: precio"));
         btnTransbordos.setOnAction(e -> System.out.println("Pendiente: transbordos"));
     }
 
@@ -118,8 +115,7 @@ public class GestionRutasController {
         if (origenSel == null) {
             origenSel = v.element();
             node.setStyle("-fx-fill: #f1c40f;");
-            lblResultado.setText("Origen: " + origenSel.getNombre() +
-                    "\nSeleccione la parada de DESTINO.");
+            lblResultado.setText("Origen: " + origenSel.getNombre() + "\nSeleccione la parada de DESTINO.");
             return;
         }
 
@@ -141,8 +137,7 @@ public class GestionRutasController {
         List<Parada> camino = AlgoritmosGrafo.dijkstra(ady, origenSel, destinoSel);
 
         if (camino.isEmpty()) {
-            lblResultado.setText("No existe ruta entre " +
-                    origenSel.getNombre() + " y " + destinoSel.getNombre() + ".");
+            lblResultado.setText("No existe ruta entre " + origenSel.getNombre() + " y " + destinoSel.getNombre() + ".");
             return;
         }
 
@@ -169,8 +164,7 @@ public class GestionRutasController {
         List<Parada> camino = AlgoritmosGrafo.dijkstra(ady, origenSel, destinoSel);
 
         if (camino.isEmpty()) {
-            lblResultado.setText("No existe ruta entre " +
-                    origenSel.getNombre() + " y " + destinoSel.getNombre() + ".");
+            lblResultado.setText("No existe ruta entre " + origenSel.getNombre() + " y " + destinoSel.getNombre() + ".");
             return;
         }
 
@@ -179,7 +173,7 @@ public class GestionRutasController {
         for (int i = 0; i < camino.size(); i++) {
             sb.append(camino.get(i).getNombre());
             if (i < camino.size() - 1) {
-                sb.append(" -> ");
+                sb.append("->");
                 for (Ruta r : ady.get(camino.get(i))) {
                     if (r.getDestino().equals(camino.get(i + 1))) {
                         totalTiempo += r.getTiempo();
