@@ -2,8 +2,10 @@ package com.example.demoproyfinal;
 
 import com.brunomnsilva.smartgraph.graph.Graph;
 import com.brunomnsilva.smartgraph.graph.GraphEdgeList;
+import com.brunomnsilva.smartgraph.graph.Vertex;
 import com.brunomnsilva.smartgraph.graphview.SmartCircularSortedPlacementStrategy;
 import com.brunomnsilva.smartgraph.graphview.SmartGraphPanel;
+import com.brunomnsilva.smartgraph.graphview.SmartGraphVertexNode;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -92,19 +94,69 @@ public class HelloController {
             // Activa la distribución automática, si es adecuado
             graphView.setAutomaticLayout(true);
 
-            // Iteramos sobre cada vértice y ajustamos su escala
-            for (var v : graph.vertices()) {
-                var vertexNode = (com.brunomnsilva.smartgraph.graphview.SmartGraphVertexNode) graphView.getStylableVertex(v);
-                // Escala al 50% (ajusta el valor según lo necesites)
+            // Iteramos sobre cada vértice para ajustar escala y agregar el manejo de eventos
+            for (Vertex<Parada> v : graph.vertices()) {
+                SmartGraphVertexNode vertexNode = (SmartGraphVertexNode) graphView.getStylableVertex(v);
+                // Reducimos el tamaño del nodo (ajusta el valor según lo necesites)
                 vertexNode.setScaleX(0.5);
                 vertexNode.setScaleY(0.5);
-
-                // Opcional: si el método resize está accesible y deseas usarlo
-                // vertexNode.resize(25, 25);
             }
+        });
+    }
+
+    private void reconstruirGraphView() {
+        // Remover el panel actual
+        graphContainer.getChildren().clear();
+
+        // Crear una nueva instancia de SmartGraphPanel con el graph actual
+        graphView = new SmartGraphPanel<>(graph, new SmartCircularSortedPlacementStrategy());
+        graphView.setMinSize(400, 200);
+        graphView.prefWidthProperty().bind(graphContainer.widthProperty());
+        graphView.prefHeightProperty().bind(graphContainer.heightProperty());
+
+        // Establecer anclajes
+        AnchorPane.setTopAnchor(graphView, 0.0);
+        AnchorPane.setRightAnchor(graphView, 0.0);
+        AnchorPane.setBottomAnchor(graphView, 0.0);
+        AnchorPane.setLeftAnchor(graphView, 0.0);
+
+        // Agregar funcionalidad de zoom (puedes encapsularlo también si lo deseas)
+        graphView.setOnScroll(event -> {
+            System.out.println("onScroll event detected! DeltaY = " + event.getDeltaY());
+            double zoomFactor = 2.0;
+            if (event.getDeltaY() < 0) {
+                zoomFactor = 1 / zoomFactor;
+            }
+            graphView.setScaleX(graphView.getScaleX() * zoomFactor);
+            graphView.setScaleY(graphView.getScaleY() * zoomFactor);
+            event.consume();
+        });
+
+        // Asegurarse de capturar eventos
+        graphView.setPickOnBounds(true);
+        graphView.setFocusTraversable(true);
+        graphView.requestFocus();
+
+        // Inicializar y configurar layout
+        Platform.runLater(() -> {
+            graphView.init();
+            graphView.setAutomaticLayout(true);
+            // Después de 2 segundos, desactiva el layout automático para evitar reajustes
+            new Thread(() -> {
+                try {
+                    Thread.sleep(2000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                Platform.runLater(() -> graphView.setAutomaticLayout(false));
+            }).start();
+            graphViewInitialized = true;
+            System.out.println("Grafo inicializado correctamente");
         });
 
 
+        // Agregar el nuevo panel al contenedor
+        graphContainer.getChildren().add(graphView);
     }
 
 
@@ -113,11 +165,10 @@ public class HelloController {
         String nombre = txtParada.getText().trim();
         if (nombre.isEmpty()) return;
 
-        // Verificar si la parada ya existe (comparación sin tener en cuenta mayúsculas/minúsculas)
+        // Validación: si la parada ya existe
         boolean existe = Controlador.getInstance().getParadas().stream()
                 .anyMatch(p -> p.getNombre().equalsIgnoreCase(nombre));
         if (existe) {
-            // Mostrar un panel de información si la parada ya existe
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("Información");
             alert.setHeaderText(null);
@@ -126,16 +177,23 @@ public class HelloController {
             return;
         }
 
-        // Si la parada no existe, se procede a agregarla
         Parada nueva = new Parada(nombre);
         Controlador.getInstance().insertarParada(nueva);
         Controlador.getInstance().reconstruirListaAdyacencia();
         new ParadaDAO().insertarParada(nueva);
         txtParada.clear();
 
+        // Insertar el nuevo vértice en el grafo
         graph.insertVertex(nueva);
-        if (graphViewInitialized) Platform.runLater(graphView::update);
+        if (graphViewInitialized) {
+            Platform.runLater(() -> graphView.update());
+        }
+
+
+
+
     }
+
 
     @FXML
     void agregarRuta(ActionEvent event) {
@@ -151,10 +209,8 @@ public class HelloController {
             int dist = Integer.parseInt(distStr);
             float cost = Float.parseFloat(costoStr);
             int tim = Integer.parseInt(timeStr);
-            if (dist <= 0 || cost <= 0 || tim <= 0)
-                return;
+            if (dist <= 0 || cost <= 0 || tim <= 0) return;
 
-            // Buscar las paradas en la lista del Controlador
             Parada pOrigen = Controlador.getInstance().getParadas().stream()
                     .filter(p -> p.getNombre().equalsIgnoreCase(origen))
                     .findFirst().orElse(null);
@@ -162,7 +218,6 @@ public class HelloController {
                     .filter(p -> p.getNombre().equalsIgnoreCase(destino))
                     .findFirst().orElse(null);
 
-            // Validar existencia de paradas
             if (pOrigen == null || pDestino == null) {
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Información");
@@ -178,7 +233,6 @@ public class HelloController {
                 return;
             }
 
-            // Validar que no sean iguales
             if (pOrigen.equals(pDestino)) {
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Información");
@@ -188,10 +242,9 @@ public class HelloController {
                 return;
             }
 
-            // Validar si ya existe una ruta entre pOrigen y pDestino
             boolean existeRuta = Controlador.getInstance().getRutas().stream()
-                    .anyMatch(r -> r.getOrigen().getNombre().equalsIgnoreCase(origen) &&
-                            r.getDestino().getNombre().equalsIgnoreCase(destino));
+                    .anyMatch(r -> r.getOrigen().getNombre().equalsIgnoreCase(origen)
+                            && r.getDestino().getNombre().equalsIgnoreCase(destino));
             if (existeRuta) {
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Información");
@@ -201,23 +254,25 @@ public class HelloController {
                 return;
             }
 
-            // Crear la ruta y agregarla
             Ruta nuevaRuta = new Ruta(pOrigen, pDestino, dist, cost, tim);
             Controlador.getInstance().insertarRuta(nuevaRuta);
             Controlador.getInstance().reconstruirListaAdyacencia();
             new RutaDAO().insertarRuta(nuevaRuta);
             graph.insertEdge(pOrigen, pDestino, nuevaRuta);
-            if (graphViewInitialized) Platform.runLater(graphView::update);
 
-            // Limpiar campos
+            // Reconstruir el panel para que se muestre el nuevo edge
+            if (graphViewInitialized) {
+                Platform.runLater(() -> reconstruirGraphView());
+            }
+
             txtOrigen.clear();
             txtDestino.clear();
             txtDistancia.clear();
             txtCosto.clear();
             txtTiempo.clear();
-
         } catch (NumberFormatException ignored) {}
     }
+
 
 
 }
