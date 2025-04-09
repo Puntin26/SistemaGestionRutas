@@ -185,13 +185,17 @@ public class HelloController {
 
         // Insertar el nuevo vértice en el grafo
         graph.insertVertex(nueva);
-        if (graphViewInitialized) {
-            Platform.runLater(() -> graphView.update());
-        }
 
-
-
-
+        Platform.runLater(() -> {
+            graphView.update();
+            // Obtener el nodo que representa la nueva parada
+            SmartGraphVertexNode vertexNode = (SmartGraphVertexNode) graphView.getStylableVertex(nueva);
+            if (vertexNode != null) {
+                // Ajustar la escala para que coincida con los demás nodos
+                vertexNode.setScaleX(0.5);
+                vertexNode.setScaleY(0.5);
+            }
+        });
     }
 
 
@@ -261,9 +265,9 @@ public class HelloController {
             graph.insertEdge(pOrigen, pDestino, nuevaRuta);
 
             // Reconstruir el panel para que se muestre el nuevo edge
-            if (graphViewInitialized) {
-                Platform.runLater(() -> reconstruirGraphView());
-            }
+            Platform.runLater(() -> {
+                graphView.update();
+            });
 
             txtOrigen.clear();
             txtDestino.clear();

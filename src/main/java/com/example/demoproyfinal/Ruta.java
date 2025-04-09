@@ -69,7 +69,7 @@ public class Ruta {
 
     @Override
     public String toString() {
-        return distancia + "km\n";
+        return origen.getNombre() + "->" + destino.getNombre() + distancia + "km\n";
     }
 
     public String toString2() {
