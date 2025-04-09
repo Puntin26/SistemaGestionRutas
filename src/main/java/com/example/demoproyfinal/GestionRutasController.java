@@ -11,6 +11,7 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -24,6 +25,8 @@ public class GestionRutasController {
     @FXML private Button btnTiempo;
     @FXML private Button btnPrecio;
     @FXML private Button btnTransbordos;
+    @FXML private Button btnCostoBF;
+    @FXML private Button btnRutaFloyd;
 
     private Graph<Parada,Ruta> graph;
     private SmartGraphPanel<Parada,Ruta> graphView;
@@ -43,6 +46,16 @@ public class GestionRutasController {
     }
 
     private void crearGrafo() {
+
+        ParadaDAO paradaDAO = new ParadaDAO();
+        RutaDAO rutaDAO = new RutaDAO();
+        List<Parada> paradasBD = paradaDAO.obtenerParadas();
+        List<Ruta> rutasBD = rutaDAO.obtenerrutas();
+
+        Controlador.getInstance().setParadas(new ArrayList<>(paradasBD));
+        Controlador.getInstance().setRutas(new ArrayList<>(rutasBD));
+        Controlador.getInstance().reconstruirListaAdyacencia();
+
         graph = new GraphEdgeList<>();
 
         Controlador c = Controlador.getInstance();
@@ -58,11 +71,11 @@ public class GestionRutasController {
         AnchorPane.setRightAnchor (graphView,0d);
         graphContainer.getChildren().add(graphView);
 
+
         panelCalculos.toFront();
         panelExtra.toFront();
 
         graphView.setOnScroll(event -> {
-            System.out.println("onScroll event detected! DeltaY = " + event.getDeltaY());
             double zoomFactor = 2.0;
             if (event.getDeltaY() < 0) {
                 zoomFactor = 1 / zoomFactor;
@@ -73,16 +86,32 @@ public class GestionRutasController {
         });
 
 
+
         Platform.runLater(() -> {
             graphView.init();
+            // Activa la distribución automática, si es adecuado
             graphView.setAutomaticLayout(true);
 
+            // Iteramos sobre cada vértice para ajustar escala, habilitar pick y asignar el evento de click
             for (Vertex<Parada> v : graph.vertices()) {
-                SmartGraphVertexNode node = (SmartGraphVertexNode) graphView.getStylableVertex(v);
+                SmartGraphVertexNode vertexNode = (SmartGraphVertexNode) graphView.getStylableVertex(v);
+                // Reducir el tamaño de cada nodo (escala al 70%)
+                vertexNode.setScaleX(0.7);
+                vertexNode.setScaleY(0.7);
 
-                node.setOnMouseClicked(e -> procesarClickVertice(v, node));
+                // Aseguramos que el nodo capture el click en todo su contorno
+                vertexNode.setPickOnBounds(true);
+
+                // Asignamos un handler para que, al hacer click, lleve el nodo al frente y procese el click
+                vertexNode.setOnMouseClicked(event -> {
+                    vertexNode.toFront();
+                    // Llamamos al método de procesamiento, que se encargará de manejar la selección
+                    procesarClickVertice(v, vertexNode);
+                });
             }
         });
+
+
     }
 
     private void prepararPanelExtra() {
@@ -143,6 +172,32 @@ public class GestionRutasController {
                 n.setStyle("");
             });
         });
+
+        btnCostoBF.setOnAction(e -> {
+            modoCalculo = "costo_bf";
+            esperando   = true;
+            origenSel   = null;
+            destinoSel  = null;
+            lblResultado.setText("Seleccione la parada de ORIGEN.");
+            graph.vertices().forEach(v -> {
+                SmartGraphVertexNode n = (SmartGraphVertexNode) graphView.getStylableVertex(v);
+                n.setStyle("");
+            });
+        });
+
+        btnRutaFloyd.setOnAction(e -> {
+            modoCalculo = "ruta_floyd";
+            esperando   = true;
+            origenSel   = null;
+            destinoSel  = null;
+            lblResultado.setText("Seleccione la parada de ORIGEN.");
+            graph.vertices().forEach(v -> {
+                SmartGraphVertexNode n = (SmartGraphVertexNode) graphView.getStylableVertex(v);
+                n.setStyle("");
+            });
+        });
+
+
     }
 
     private void procesarClickVertice(Vertex<Parada> v, SmartGraphVertexNode node) {
@@ -168,9 +223,77 @@ public class GestionRutasController {
                 calcularRutaPorCosto();
             } else if (modoCalculo.equals("transbordos")) {
                 calcularRutaPorTransbordos();
+            } else if (modoCalculo.equals("costo_bf")) {
+                calcularRutaPorCostoBF();
+            } else if (modoCalculo.equals("ruta_floyd")) {
+                calcularRutaFloyd();
             }
         }
     }
+
+    private void calcularRutaFloyd(){
+        // 1. Obtener la lista completa de paradas y la estructura de adyacencia
+        List<Parada> paradas = Controlador.getInstance().getParadas();
+        Map<Parada, List<Ruta>> adyacencia = Controlador.getInstance().getListaAdyacencia();
+
+        // 2. Ejecutar el algoritmo Floyd–Warshall para obtener la matriz de distancias mínimas
+        int[][] matrizDistancias = AlgoritmosGrafo.floydWarshall(paradas, adyacencia);
+
+        // 3. Buscar el índice (posición) de la parada origen y destino en la lista de paradas
+        int idxOrigen = paradas.indexOf(origenSel);
+        int idxDestino = paradas.indexOf(destinoSel);
+
+        if(idxOrigen == -1 || idxDestino == -1) {
+            lblResultado.setText("Origen o destino no válidos.");
+            return;
+        }
+
+        // 4. Extraer la distancia mínima entre origen y destino de la matriz
+        int distanciaMinima = matrizDistancias[idxOrigen][idxDestino];
+
+        // Si el valor es muy grande, se entiende que no hay ruta válida
+        if(distanciaMinima >= Integer.MAX_VALUE/2) {
+            lblResultado.setText("No existe ruta entre "
+                    + origenSel.getNombre()
+                    + " y "
+                    + destinoSel.getNombre());
+            return;
+        }
+
+        // 5. Mostrar el resultado en el panel extra (puedes ampliar para mostrar también la ruta completa si implementas el camino)
+        lblResultado.setText("La distancia mínima entre " + origenSel.getNombre() +
+                " y " + destinoSel.getNombre() + " es: " + distanciaMinima + " km");
+    }
+
+
+    private void calcularRutaPorCostoBF() {
+        Map<Parada, List<Ruta>> ady = Controlador.getInstance().getListaAdyacencia();
+        List<Parada> camino = AlgoritmosGrafo.bellmanFordCosto(ady, origenSel, destinoSel);
+
+        if (camino.isEmpty()) {
+            lblResultado.setText("No existe ruta o se encontró un ciclo negativo entre "
+                    + origenSel.getNombre() + " y " + destinoSel.getNombre() + ".");
+            return;
+        }
+
+        float totalCosto = 0;
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < camino.size(); i++) {
+            sb.append(camino.get(i).getNombre());
+            if (i < camino.size() - 1) {
+                sb.append(" -> ");
+                for (Ruta r : ady.get(camino.get(i))) {
+                    if (r.getDestino().equals(camino.get(i + 1))) {
+                        totalCosto += r.getCosto();
+                        break;
+                    }
+                }
+            }
+        }
+        sb.append("\nCosto total: ").append(totalCosto).append(" $");
+        lblResultado.setText(sb.toString());
+    }
+
 
     private void calcularRutaDistancia() {
         Map<Parada, List<Ruta>> ady = Controlador.getInstance().getListaAdyacencia();

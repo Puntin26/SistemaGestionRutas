@@ -84,18 +84,26 @@ public class HelloController {
         });
 
         // (Opcional) Agregar un estilo de borde para visualizar el área del graphView
-        graphView.setStyle("-fx-border-color: red; -fx-border-width: 3;");
+        graphView.setStyle("-fx-border-color: #008287; -fx-border-width: #008287;");
 
         // Inicializar el graphView en el Thread de JavaFX
         Platform.runLater(() -> {
             graphView.init();
-            // Activa la distribución inicial
+            // Activa la distribución automática, si es adecuado
             graphView.setAutomaticLayout(true);
-            graphViewInitialized = true;
 
-            // OPCIONAL: Desactiva la autocolocación después de un pequeño retraso
-            // para evitar reajustes mientras se hace zoom
+            // Iteramos sobre cada vértice y ajustamos su escala
+            for (var v : graph.vertices()) {
+                var vertexNode = (com.brunomnsilva.smartgraph.graphview.SmartGraphVertexNode) graphView.getStylableVertex(v);
+                // Escala al 50% (ajusta el valor según lo necesites)
+                vertexNode.setScaleX(0.5);
+                vertexNode.setScaleY(0.5);
+
+                // Opcional: si el método resize está accesible y deseas usarlo
+                // vertexNode.resize(25, 25);
+            }
         });
+
 
     }
 

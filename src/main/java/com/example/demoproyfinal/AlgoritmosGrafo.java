@@ -57,6 +57,68 @@ public class AlgoritmosGrafo {
         return camino;
     }
 
+    public static List<Parada> bellmanFordCosto(Map<Parada, List<Ruta>> listaAdy, Parada origen, Parada destino) {
+        // Para evitar overflow, se usa un "infinito" seguro (Integer.MAX_VALUE/2)
+        Map<Parada, Integer> costo = new HashMap<>();
+        Map<Parada, Parada> previo = new HashMap<>();
+
+        // Inicialización: para cada parada, se fija un costo muy grande y se marca como sin predecesor.
+        for (Parada p : listaAdy.keySet()) {
+            costo.put(p, Integer.MAX_VALUE / 2);
+            previo.put(p, null);
+        }
+        costo.put(origen, 0);
+
+        int n = costo.size();
+
+        // Se realizan n-1 iteraciones, actualizando la "distancia" (en este caso, costo)
+        // en todas las aristas disponibles.
+        for (int i = 1; i <= n - 1; i++) {
+            for (Parada u : listaAdy.keySet()) {
+                List<Ruta> rutas = listaAdy.get(u);
+                if (rutas != null) {
+                    for (Ruta r : rutas) {
+                        Parada v = r.getDestino();
+                        float w = r.getCosto();  // Puede ser negativo en caso de descuentos
+                        if (costo.get(u) + w < costo.get(v)) {
+                            costo.put(v, (int) (costo.get(u) + w));
+                            previo.put(v, u);
+                        }
+                    }
+                }
+            }
+        }
+
+        // Verificación de ciclos negativos: se realiza una pasada más.
+        for (Parada u : listaAdy.keySet()) {
+            List<Ruta> rutas = listaAdy.get(u);
+            if (rutas != null) {
+                for (Ruta r : rutas) {
+                    Parada v = r.getDestino();
+                    float w = r.getCosto();
+                    if (costo.get(u) + w < costo.get(v)) {
+                        System.out.println("El grafo contiene un ciclo de peso negativo.");
+                        return Collections.emptyList();
+                    }
+                }
+            }
+        }
+
+        // Reconstrucción del camino desde el destino hacia el origen usando el mapa "previo"
+        List<Parada> camino = new ArrayList<>();
+        Parada actual = destino;
+        while (actual != null) {
+            camino.add(actual);
+            actual = previo.get(actual);
+        }
+        Collections.reverse(camino);
+
+        if (costo.get(destino) == Integer.MAX_VALUE / 2) {
+            return Collections.emptyList();
+        }
+        return camino;
+    }
+
 
 
     public static List<Parada> dijkstra(Map<Parada,List<Ruta>> listaAdy, Parada origen, Parada destino) {

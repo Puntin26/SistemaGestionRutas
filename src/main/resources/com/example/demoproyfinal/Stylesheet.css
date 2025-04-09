@@ -35,6 +35,28 @@ Button {
     -fx-border-radius: 10;
 }
 
+/* Asegúrate de usar el selector correcto según cómo se llame la clase de tus nodos */
+.smart-graph-vertex {
+    -fx-pref-width: 15px;
+    -fx-pref-height: 15px;
+    -fx-min-width: 15px;
+    -fx-min-height: 15px;
+    -fx-max-width: 15px;
+    -fx-max-height: 15px;
+    -fx-font-size: 5px;  /* Si muestra texto, lo reduce */
+}
+
+/* Para cambiar el tamaño del texto que se muestra como nombre de los nodos */
+.smart-graph-vertex-label {
+    -fx-font-size: 10px; /* Ajusta a un tamaño más pequeño si lo deseas */
+}
+
+/* Para cambiar el tamaño del texto que aparece en las aristas (por ejemplo, distancia, costo, tiempo) */
+.smart-graph-edge-label {
+    -fx-font-size: 10px; /* Ajusta a un tamaño más pequeño si lo deseas */
+}
+
+
 #autor {
     -fx-font-family: "Montserrat";
     -fx-text-fill: #FFFF00;
